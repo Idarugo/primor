@@ -45,3 +45,4 @@ npm run import:catalog   # trae precios y stock actuales desde primor.cl
 7. **Dominio**: Settings → Domains → `primor.cl`.
 
 Los encabezados de seguridad están en `vercel.json` y se aplican solos.
+# primor
