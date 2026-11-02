@@ -1,0 +1,48 @@
+---
+import { products } from '../data/site';
+---
+
+<section id="productos" data-products aria-labelledby="productos-title" class="relative overflow-hidden bg-ink">
+  <div class="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between px-4 pt-24 sm:px-8">
+    <h2 id="productos-title" class="caption-3 text-cream/80">La familia Primor</h2>
+    <p aria-hidden="true" class="caption-3 tabular-nums text-cream/80"><span data-products-count>01</span> / {String(products.length).padStart(2, '0')}</p>
+  </div>
+
+  <div data-products-track class="flex h-svh w-max will-change-transform max-md:h-auto max-md:w-full max-md:flex-col">
+    {products.map((p, i) => (
+      <article
+        data-product
+        aria-label={`${p.name}, ${p.format}`}
+        class:list={['relative flex h-svh w-screen shrink-0 items-center overflow-hidden', p.bg, p.fg, 'max-md:min-h-svh max-md:h-auto']}
+      >
+        <span aria-hidden="true" data-product-num class="pointer-events-none absolute -bottom-6 left-4 text-9xl font-bold tracking-tighter opacity-15 sm:left-8 lg:-bottom-10">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+        <div class="mx-auto grid w-full max-w-7xl items-center gap-8 px-4 py-24 sm:px-8 md:grid-cols-2 md:gap-16">
+          <div class="relative z-10 order-2 md:order-1">
+            <p class="caption-3 opacity-70">{p.format}</p>
+            <h3 class="heading-2 mt-4 sm:text-7xl sm:font-bold sm:tracking-tighter">{p.name}</h3>
+            <p class="body-3 mt-6 max-w-md opacity-80 sm:text-lg">{p.copy}</p>
+            <a href={p.href} class:list={['btn mt-8', p.fg === 'text-ink' ? 'btn-ink' : 'bg-cream text-ink']}>
+              Comprar {p.name.toLowerCase()}
+            </a>
+          </div>
+          <div class="relative order-1 grid place-items-center md:order-2">
+            <svg aria-hidden="true" data-product-chip class="absolute -top-4 right-[10%] size-20 rotate-12 sm:size-28"><use href="#chip-2" /></svg>
+            <img
+              data-product-img
+              src={p.img}
+              alt={p.alt}
+              loading="lazy"
+              class:list={[
+                'relative w-auto drop-shadow-[0_40px_50px_rgba(0,0,0,0.35)]',
+                p.wide ? 'max-h-[42svh] md:max-h-[56svh]' : 'max-h-[48svh] md:max-h-[68svh]',
+              ]}
+            />
+            <svg aria-hidden="true" data-product-chip class="absolute bottom-0 left-[8%] size-16 -rotate-45 sm:size-24"><use href="#chip-3" /></svg>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>

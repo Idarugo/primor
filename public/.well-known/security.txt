@@ -1,0 +1,5 @@
+# Cómo reportar una vulnerabilidad en primor.cl (RFC 9116)
+Contact: mailto:{{correo_seguridad}}
+Expires: 2027-11-02T00:00:00.000Z
+Preferred-Languages: es, en
+Canonical: https://primor.cl/.well-known/security.txt

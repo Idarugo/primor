@@ -1,0 +1,18 @@
+---
+import { retailers } from '../data/site';
+const row = [...retailers, ...retailers];
+---
+
+<section aria-labelledby="retail-title" class="relative overflow-hidden bg-red py-16 text-cream sm:py-24">
+  <h2 id="retail-title" data-reveal class="caption-3 px-4 text-center text-cream/80">Encuéntranos en</h2>
+  <div class="mt-8 flex overflow-hidden" data-marquee>
+    <ul class="marquee-track flex shrink-0 items-center gap-8 pr-8 sm:gap-16 sm:pr-16">
+      {row.map((r, i) => (
+        <li aria-hidden={i >= retailers.length ? 'true' : undefined} class="flex shrink-0 items-center gap-8 sm:gap-16">
+          <span class="text-5xl font-bold tracking-tighter whitespace-nowrap sm:text-8xl">{r}</span>
+          <svg aria-hidden="true" class="size-12 shrink-0 sm:size-16"><use href={`#chip-${(i % 3) + 1}`} /></svg>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

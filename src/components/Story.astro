@@ -1,0 +1,76 @@
+---
+import { FOUNDED, address } from '../data/site';
+
+const chapters = [
+  {
+    kicker: String(FOUNDED),
+    title: 'Una receta casera que se quedó en la mesa',
+    body: 'Primor nace en 1973 con una idea simple: papas fritas como las de la casa, para compartir en familia.',
+    img: '/img/bag-500.webp',
+    alt: 'Bolsa de papas fritas Primor de 500 gramos',
+    contain: true,
+  },
+  {
+    kicker: 'Artesanal',
+    title: 'Fritas con la misma dedicación de siempre',
+    body: 'Cada snack Primor se prepara de manera artesanal. Por eso, una vez que las pruebas, no te resistes a volver.',
+    img: '/img/ig03.webp',
+    alt: 'Canasta de picnic con productos Primor sobre un mantel a cuadros',
+  },
+  {
+    kicker: address.city,
+    title: 'Nuestra casa está en Rancagua',
+    body: `La sala de venta sigue en ${address.street}. Pasa a buscar tus cajas, saluda y llévate lo más vendido.`,
+    img: '/img/caja-mix.webp',
+    alt: 'Caja Primor llena de papas, ramitas, suflés y maní',
+    contain: true,
+  },
+  {
+    kicker: 'Hoy',
+    title: 'Del almacén del barrio a Jumbo y Líder',
+    body: 'Cinco décadas después, Primor está en supermercados, botillerías y en la tienda online. Sigue siendo la misma papa.',
+    img: '/img/ig05.webp',
+    alt: 'Reel de Primor grabado afuera de un supermercado en Rancagua',
+  },
+];
+---
+
+<section id="historia" data-story class="relative bg-ink">
+  <div class="mx-auto grid max-w-7xl gap-8 px-4 md:grid-cols-2 md:gap-16 md:px-8">
+    <!-- Sticky visual column -->
+    <div class="sticky top-0 z-0 flex h-svh flex-col justify-center py-24 max-md:h-[60svh] max-md:py-20">
+      <div class="relative">
+        <p aria-hidden="true" class="caption-3 mb-4 text-yellow">Desde</p>
+        <p aria-hidden="true" class="display tabular-nums text-cream" data-year>{FOUNDED}</p>
+        <p class="sr-only">Desde {FOUNDED} hasta hoy</p>
+      </div>
+      <div class="relative mt-8 aspect-[4/5] w-full max-w-sm overflow-hidden rounded-3xl bg-ink-2 max-md:hidden">
+        {chapters.map((c, i) => (
+          <img
+            data-story-img={i}
+            src={c.img}
+            alt={c.alt}
+            loading="lazy"
+            class:list={[
+              'absolute inset-0 size-full transition duration-700 ease-out-soft',
+              c.contain ? 'object-contain p-8' : 'object-cover',
+              i === 0 ? 'opacity-100' : 'scale-105 opacity-0',
+            ]}
+          />
+        ))}
+      </div>
+    </div>
+
+    <!-- Chapters -->
+    <ol class="relative z-10 md:py-[30svh]">
+      {chapters.map((c, i) => (
+        <li data-story-step={i} class="flex min-h-[80svh] flex-col justify-center py-16 opacity-30 transition-opacity duration-700 ease-out-soft">
+          <p class="caption-3 text-yellow">{c.kicker}</p>
+          <h2 class="heading-3 mt-4 max-w-md sm:heading-2">{c.title}</h2>
+          <p class="body-3 mt-6 max-w-md text-cream/70 sm:text-lg">{c.body}</p>
+          <img src={c.img} alt="" loading="lazy" class:list={['mt-8 aspect-[4/5] w-full max-w-xs rounded-3xl bg-ink-2 md:hidden', c.contain ? 'object-contain p-6' : 'object-cover']} />
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

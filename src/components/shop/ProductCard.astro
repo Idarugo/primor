@@ -1,0 +1,55 @@
+---
+import { Image } from 'astro:assets';
+import AddToCart from './AddToCart.astro';
+import { imageFor, formatLabel, shortName, unitPrice, discount, clp, stockLabel, type CatalogProduct } from '../../data/catalog';
+
+interface Props {
+  product: CatalogProduct;
+  index?: number;
+}
+const { product: p, index = 0 } = Astro.props;
+const img = imageFor(p.images[0]);
+const unit = unitPrice(p);
+const off = discount(p);
+---
+
+<li
+  data-card
+  data-product-id={p.id}
+  data-family={p.family}
+  data-price={p.price}
+  data-order={index}
+  data-search={`${p.name} ${p.family} ${p.ingredients}`.toLowerCase()}
+  class="group relative flex flex-col rounded-3xl bg-white p-2 ring-1 ring-ink/5 transition-transform duration-500 ease-out-soft hover:-translate-y-1"
+>
+  <a href={`/tienda/${p.slug}`} class="relative block aspect-square overflow-hidden rounded-2xl bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red">
+    {img && (
+      <Image
+        src={img}
+        alt={p.name}
+        width={480}
+        height={480}
+        format="webp"
+        loading={index < 4 ? 'eager' : 'lazy'}
+        class:list={['size-full object-contain transition-transform duration-500 ease-out-soft group-hover:scale-105', !p.inStock && 'opacity-50 grayscale']}
+      />
+    )}
+    <div class="absolute top-2 left-2 flex flex-wrap gap-1">
+      {off > 0 && <span class="caption-3 rounded-full bg-red px-2 py-1 !tracking-normal text-cream">−{off}%</span>}
+      {p.lowStock && p.inStock && <span class="caption-3 rounded-full bg-yellow px-2 py-1 !tracking-normal">{stockLabel(p.lowStock)}</span>}
+      {!p.inStock && <span class="caption-3 rounded-full bg-ink px-2 py-1 !tracking-normal text-cream">Agotado</span>}
+    </div>
+  </a>
+  <div class="flex flex-1 flex-col gap-1 p-2 pt-4">
+    <p class="caption-4 text-ink/50">{formatLabel(p)}</p>
+    <h3 class="title-3 line-clamp-2"><a href={`/tienda/${p.slug}`} class="after:absolute after:inset-0 after:rounded-3xl">{shortName(p)}</a></h3>
+    <div class="mt-auto flex items-baseline gap-2 pt-2">
+      <span data-price-text class="heading-6 tabular-nums">{clp(p.price)}</span>
+      {off > 0 && <s class="body-6 tabular-nums text-ink/40">{clp(p.regularPrice)}</s>}
+      {unit && <span data-unit-text={p.pack} class="caption-5 tabular-nums text-ink/50">{clp(unit)} c/u</span>}
+    </div>
+    <div class="relative z-10 pt-2">
+      <AddToCart product={p} />
+    </div>
+  </div>
+</li>

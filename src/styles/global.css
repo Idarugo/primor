@@ -1,0 +1,108 @@
+@import "tailwindcss";
+@import "@fontsource-variable/manrope";
+
+@theme {
+  --font-sans: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink: #131209;
+  --color-ink-2: #1f1f1f;
+  --color-cream: #fff4dc;
+  --color-muted: #b8ad94;
+  --color-yellow: #ffd21a;
+  --color-red: #d7261e;
+  --color-blue: #1f3e9e;
+  --color-green: #3d8b2f;
+  --color-purple: #6a3d9a;
+  --color-orange: #e8781f;
+  --color-navy: #182a6b;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Named text styles (landing-page-design B1) */
+@utility heading-1 { @apply text-6xl font-semibold tracking-tight; }
+@utility heading-2 { @apply text-5xl font-semibold tracking-tight; }
+@utility heading-3 { @apply text-4xl font-semibold tracking-tight; }
+@utility heading-4 { @apply text-3xl font-semibold tracking-tight; }
+@utility heading-5 { @apply text-2xl font-semibold; }
+@utility heading-6 { @apply text-xl font-semibold; }
+@utility title-1 { @apply text-xl font-medium; }
+@utility title-2 { @apply text-lg font-medium; }
+@utility title-3 { @apply text-base font-medium; }
+@utility title-4 { @apply text-sm font-medium; }
+@utility body-1 { @apply text-base font-semibold; }
+@utility body-2 { @apply text-base font-medium; }
+@utility body-3 { @apply text-base font-normal; }
+@utility body-4 { @apply text-sm font-semibold; }
+@utility body-5 { @apply text-sm font-medium; }
+@utility body-6 { @apply text-sm font-normal; }
+@utility button-lg { @apply text-lg font-semibold; }
+@utility button-md { @apply text-base font-semibold; }
+@utility button-sm { @apply text-sm font-semibold; }
+@utility caption-3 { @apply text-xs font-semibold uppercase tracking-widest; }
+@utility caption-4 { @apply text-xs font-medium; }
+@utility caption-5 { @apply text-xs font-normal; }
+
+/* Display sizes for scrollytelling moments, always on scale steps */
+@utility display { @apply text-6xl font-bold tracking-tighter sm:text-8xl lg:text-9xl; }
+
+@layer components {
+  .btn {
+    @apply button-md inline-flex items-center gap-2 rounded-full px-5 py-3 transition-transform duration-500 ease-out-soft select-none;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-yellow;
+  }
+  .btn:hover { transform: translateY(-2px) scale(1.02); }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { @apply bg-yellow text-ink; }
+  .btn-ink { @apply bg-ink text-cream; }
+  .btn-ghost { @apply bg-cream/10 text-cream backdrop-blur; }
+}
+
+/* Initial states for scroll animations (classes, not style="", so the CSP needs no unsafe-inline) */
+.scale-start { transform: scale(0); }
+.hero-bag { transform: translateY(var(--bag-y)) scale(var(--bag-s)); }
+
+html {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+body { overflow-x: clip; }
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+::selection { background: var(--color-yellow); color: var(--color-ink); }
+
+.hero-gradient {
+  background: linear-gradient(90deg, #ffffff 0%, #9b9b9b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Word by word tagline reveal */
+.reveal-word { opacity: 0.3; transition: opacity 600ms var(--ease-out-soft); }
+.reveal-word.is-on { opacity: 1; }
+
+/* Generic section reveal */
+[data-reveal] { opacity: 0; transform: translateY(32px); transition: opacity 700ms var(--ease-out-soft), transform 700ms var(--ease-out-soft); }
+[data-reveal].is-in { opacity: 1; transform: none; }
+
+/* Retail marquee */
+.marquee-track { animation: marquee 32s linear infinite; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+.grain::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.06; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-word { opacity: 1 !important; transition: none; }
+  [data-reveal] { opacity: 1; transform: none; transition: opacity 300ms; }
+  .marquee-track { animation: none; }
+}

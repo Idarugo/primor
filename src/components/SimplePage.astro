@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+interface Props { title: string; kicker: string }
+const { title, kicker } = Astro.props;
+---
+
+<Layout title={`${title} · Primor`}>
+  <section class="mx-auto flex min-h-svh max-w-3xl flex-col justify-center px-4 py-32">
+    <p class="caption-3 text-yellow">{kicker}</p>
+    <h1 class="heading-2 mt-4 sm:heading-1">{title}</h1>
+    <div class="body-3 mt-8 space-y-4 text-cream/70"><slot /></div>
+    <a href="/" class="btn btn-primary mt-8 self-start">Volver al inicio</a>
+  </section>
+</Layout>

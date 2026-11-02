@@ -1,0 +1,293 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { address } from '../../data/site';
+
+const field = 'body-6 w-full rounded-xl bg-white px-4 py-3 ring-1 ring-ink/15 placeholder:text-ink/40 focus:ring-2 focus:ring-ink focus:outline-none aria-invalid:ring-2 aria-invalid:ring-red';
+const label = 'title-4 mb-2 block';
+---
+
+<Layout title="Finalizar compra · Primor" theme="light">
+  <div class="mx-auto max-w-7xl px-4 pt-28 pb-24 sm:px-8">
+    <a href="/tienda" class="caption-4 text-ink/50 hover:text-ink">← Volver a la tienda</a>
+    <h1 class="heading-3 mt-4 sm:heading-2">Finalizar compra</h1>
+    <div class="mt-2 flex flex-wrap items-center gap-2">
+      <p class="body-6 inline-flex items-center gap-2 rounded-full bg-yellow px-3 py-1">Modo demostración: no se cobra nada ni se envía el pedido.</p>
+      <p data-guest-hint class="body-6 text-ink/60">¿Tienes cuenta? <a href="/cuenta?volver=/tienda/checkout" class="body-4 text-ink underline underline-offset-4">Ingresa</a> y completamos tus datos.</p>
+      <p data-member-hint hidden class="body-6 text-ink/60">Comprando como <strong data-member-email class="body-4 text-ink"></strong></p>
+    </div>
+
+    <div data-checkout-empty class="hidden flex-col items-start gap-4 py-16">
+      <p class="title-1">No hay productos en tu carrito.</p>
+      <a href="/tienda" class="btn btn-ink">Ver productos</a>
+    </div>
+
+    <form data-checkout novalidate class="mt-8 grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-16">
+      <div class="flex flex-col gap-8">
+        <fieldset class="rounded-3xl bg-white p-6 ring-1 ring-ink/5">
+          <legend class="heading-6 float-left mb-6 w-full">1. Tus datos</legend>
+          <div class="clear-both grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="name" class={label}>Nombre y apellido</label>
+              <input id="name" name="name" autocomplete="name" required class={field} placeholder="Camila Rojas" />
+              <p data-error-for="name" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+            <div>
+              <label for="phone" class={label}>Teléfono</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required class={field} placeholder="+56 9 1234 5678" />
+              <p data-error-for="phone" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+            <div class="sm:col-span-2">
+              <label for="email" class={label}>Correo</label>
+              <input id="email" name="email" type="email" autocomplete="email" required class={field} placeholder="camila@correo.cl" />
+              <p data-error-for="email" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="rounded-3xl bg-white p-6 ring-1 ring-ink/5">
+          <legend class="heading-6 float-left mb-6 w-full">2. Entrega</legend>
+          <div class="clear-both grid gap-2 sm:grid-cols-2">
+            <label class="flex cursor-pointer gap-3 rounded-2xl p-4 ring-1 ring-ink/15 has-checked:ring-2 has-checked:ring-ink">
+              <input type="radio" name="delivery" value="retiro" checked class="mt-1 accent-ink" />
+              <span><span class="title-3 block">Retiro en sala de venta</span><span class="caption-5 text-ink/60">{address.street}, {address.city} · Sin costo</span></span>
+            </label>
+            <label class="flex cursor-pointer gap-3 rounded-2xl p-4 ring-1 ring-ink/15 has-checked:ring-2 has-checked:ring-ink">
+              <input type="radio" name="delivery" value="despacho" class="mt-1 accent-ink" />
+              <span><span class="title-3 block">Despacho a domicilio</span><span class="caption-5 text-ink/60">Costo según comuna, se confirma antes de pagar</span></span>
+            </label>
+          </div>
+          <p data-pickup class="body-6 mt-4 text-ink/70">Te avisamos por correo cuando tu pedido esté listo. Horario: {address.hours.toLowerCase()}.</p>
+          <div data-shipping hidden class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <label for="street" class={label}>Dirección</label>
+              <input id="street" name="street" autocomplete="street-address" class={field} placeholder="Av. Libertador 1234, depto 56" />
+              <p data-error-for="street" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+            <div>
+              <label for="comuna" class={label}>Comuna</label>
+              <input id="comuna" name="comuna" autocomplete="address-level2" class={field} placeholder="Rancagua" list="comunas" />
+              <datalist id="comunas">
+                {['Rancagua', 'Machalí', 'Graneros', 'Codegua', 'Doñihue', 'Olivar', 'Requínoa', 'San Fernando', 'Santiago'].map((c) => <option value={c} />)}
+              </datalist>
+              <p data-error-for="comuna" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+            <div>
+              <label for="notes" class={label}>Indicaciones <span class="text-ink/40">(opcional)</span></label>
+              <input id="notes" name="notes" class={field} placeholder="Timbre, portería, horario" />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="rounded-3xl bg-white p-6 ring-1 ring-ink/5">
+          <legend class="heading-6 float-left mb-6 w-full">3. Pago</legend>
+          <div class="clear-both grid gap-2 sm:grid-cols-2">
+            <label class="flex cursor-pointer gap-3 rounded-2xl p-4 ring-1 ring-ink/15 has-checked:ring-2 has-checked:ring-ink">
+              <input type="radio" name="payment" value="Webpay" checked class="mt-1 accent-ink" />
+              <span><span class="title-3 block">Tarjeta de débito o crédito</span><span class="caption-5 text-ink/60">Pasarela de pago (simulada)</span></span>
+            </label>
+            <label class="flex cursor-pointer gap-3 rounded-2xl p-4 ring-1 ring-ink/15 has-checked:ring-2 has-checked:ring-ink">
+              <input type="radio" name="payment" value="Transferencia" class="mt-1 accent-ink" />
+              <span><span class="title-3 block">Transferencia bancaria</span><span class="caption-5 text-ink/60">Datos de la cuenta al confirmar (simulado)</span></span>
+            </label>
+          </div>
+          <p class="title-4 mt-6 mb-2">Documento</p>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="body-5 flex cursor-pointer items-center gap-2 rounded-2xl px-4 py-3 ring-1 ring-ink/15 has-checked:ring-2 has-checked:ring-ink">
+              <input type="radio" name="doc" value="boleta" checked class="accent-ink" /> Boleta
+            </label>
+            <label class="body-5 flex cursor-pointer items-center gap-2 rounded-2xl px-4 py-3 ring-1 ring-ink/15 has-checked:ring-2 has-checked:ring-ink">
+              <input type="radio" name="doc" value="factura" class="accent-ink" /> Factura
+            </label>
+          </div>
+          <div data-factura hidden class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="rut" class={label}>RUT empresa</label>
+              <input id="rut" name="rut" class={field} placeholder="76.123.456-0" />
+              <p data-error-for="rut" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+            <div>
+              <label for="razon" class={label}>Razón social</label>
+              <input id="razon" name="razon" autocomplete="organization" class={field} placeholder="Almacén Doña Rosa SpA" />
+              <p data-error-for="razon" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+            <div class="sm:col-span-2">
+              <label for="giro" class={label}>Giro</label>
+              <input id="giro" name="giro" class={field} placeholder="Venta de abarrotes" />
+              <p data-error-for="giro" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+          </div>
+          <p class="caption-5 mt-4 text-ink/50">En esta demostración no se piden datos de tarjeta. En producción, el pago se hace en la página segura del procesador.</p>
+        </fieldset>
+      </div>
+
+      <aside class="lg:sticky lg:top-24 lg:self-start">
+        <div class="rounded-3xl bg-ink p-6 text-cream">
+          <h2 class="heading-6">Resumen</h2>
+          <ul data-summary class="mt-4 divide-y divide-cream/10"></ul>
+          <dl class="mt-4 grid gap-2 border-t border-cream/10 pt-4">
+            <div class="flex justify-between"><dt class="body-6 text-cream/70">Subtotal</dt><dd data-subtotal class="body-4 tabular-nums">$0</dd></div>
+            <div class="flex justify-between"><dt class="body-6 text-cream/70">Entrega</dt><dd data-shipping-cost class="body-4">Sin costo</dd></div>
+            <div class="flex items-baseline justify-between pt-2"><dt class="title-2">Total</dt><dd data-total class="heading-5 tabular-nums text-yellow">$0</dd></div>
+          </dl>
+          <button type="submit" data-submit class="btn btn-primary button-lg mt-6 w-full justify-center">
+            <span data-submit-label>Confirmar pedido</span>
+          </button>
+          <p data-form-error role="alert" class="caption-5 mt-3 hidden text-yellow"></p>
+        </div>
+      </aside>
+    </form>
+  </div>
+</Layout>
+
+<script>
+  import { cart, orders, clp } from '../../lib/cart';
+  import { account } from '../../lib/account';
+  import { ApiError } from '../../lib/api';
+  import { isValidRut, formatRut } from '../../lib/rut';
+  import { safeImg } from '../../lib/security';
+
+  const form = document.querySelector<HTMLFormElement>('[data-checkout]')!;
+  const empty = document.querySelector<HTMLElement>('[data-checkout-empty]')!;
+  const summary = form.querySelector<HTMLUListElement>('[data-summary]')!;
+  const shipping = form.querySelector<HTMLElement>('[data-shipping]')!;
+  const pickup = form.querySelector<HTMLElement>('[data-pickup]')!;
+  const shipCost = form.querySelector<HTMLElement>('[data-shipping-cost]')!;
+  const formError = form.querySelector<HTMLElement>('[data-form-error]')!;
+
+  const docType = () => (form.elements.namedItem('doc') as RadioNodeList).value as 'boleta' | 'factura';
+  const facturaBox = form.querySelector<HTMLElement>('[data-factura]')!;
+  const delivery = () => (form.elements.namedItem('delivery') as RadioNodeList).value as 'retiro' | 'despacho';
+
+  function paint() {
+    const has = cart.lines.length > 0;
+    form.hidden = !has;
+    empty.classList.toggle('hidden', has);
+    empty.classList.toggle('flex', !has);
+    summary.replaceChildren(
+      ...cart.lines.map((l) => {
+        // built node by node: cart data comes from storage and is never parsed as HTML
+        const li = document.createElement('li');
+        li.className = 'flex items-center gap-3 py-3';
+        const img = Object.assign(document.createElement('img'), { src: safeImg(l.img), alt: '', width: 48, height: 48, className: 'size-12 rounded-lg bg-white object-contain p-0.5' });
+        const info = Object.assign(document.createElement('span'), { className: 'body-6 min-w-0 flex-1' });
+        info.append(Object.assign(document.createElement('span'), { className: 'line-clamp-1 block', textContent: l.name }), Object.assign(document.createElement('span'), { className: 'caption-5 text-cream/50', textContent: `${l.qty} × ${clp(l.price)}` }));
+        li.append(img, info, Object.assign(document.createElement('span'), { className: 'body-4 tabular-nums', textContent: clp(l.qty * l.price) }));
+        return li;
+      }),
+    );
+    const isShip = delivery() === 'despacho';
+    shipping.hidden = !isShip;
+    pickup.hidden = isShip;
+    shipCost.textContent = isShip ? 'Por confirmar' : 'Sin costo';
+    facturaBox.hidden = docType() !== 'factura';
+    form.querySelector('[data-subtotal]')!.textContent = clp(cart.subtotal);
+    form.querySelector('[data-total]')!.textContent = clp(cart.subtotal) + (isShip ? ' + despacho' : '');
+  }
+
+  cart.onChange(paint);
+
+  // Members: prefill from the profile (only empty fields, never overwrite what was typed).
+  await account.load();
+  const user = account.user;
+  document.querySelector<HTMLElement>('[data-guest-hint]')!.hidden = !!user;
+  document.querySelector<HTMLElement>('[data-member-hint]')!.hidden = !user;
+  if (user) {
+    document.querySelector('[data-member-email]')!.textContent = user.email;
+    const addr = account.mainAddress;
+    const fill: Record<string, string> = {
+      name: user.name,
+      phone: user.phone,
+      email: user.email,
+      street: addr?.street ?? '',
+      comuna: addr?.comuna ?? '',
+      notes: addr?.notes ?? '',
+      rut: user.billing.rut,
+      razon: user.billing.razon,
+      giro: user.billing.giro,
+    };
+    for (const [k, v] of Object.entries(fill)) {
+      const input = form.elements.namedItem(k) as HTMLInputElement;
+      if (v && !input.value) input.value = v;
+    }
+    if (addr) (form.querySelector('[value=despacho]') as HTMLInputElement).checked = true;
+    if (user.billing.type === 'factura') (form.querySelector('[name=doc][value=factura]') as HTMLInputElement).checked = true;
+    paint();
+  }
+  const rutField = form.elements.namedItem('rut') as HTMLInputElement;
+  rutField.addEventListener('blur', () => rutField.value && (rutField.value = formatRut(rutField.value)));
+  form.addEventListener('change', paint);
+
+  const rules: Record<string, (v: string) => string> = {
+    name: (v) => (v.trim().split(/\s+/).length >= 2 ? '' : 'Escribe tu nombre y apellido.'),
+    phone: (v) => (/^(56)?9\d{8}$/.test(v.replace(/\D/g, '')) ? '' : 'Usa un celular chileno, por ejemplo +56 9 1234 5678.'),
+    email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? '' : 'Revisa el correo, falta algo como nombre@correo.cl.'),
+    street: (v) => (delivery() !== 'despacho' || v.trim().length >= 5 ? '' : 'Escribe la dirección de entrega.'),
+    comuna: (v) => (delivery() !== 'despacho' || v.trim().length >= 3 ? '' : 'Indica la comuna.'),
+    rut: (v) => (docType() !== 'factura' || isValidRut(v) ? '' : 'Ese RUT no es válido. Revisa el dígito verificador.'),
+    razon: (v) => (docType() !== 'factura' || v.trim().length >= 3 ? '' : 'Escribe la razón social.'),
+    giro: (v) => (docType() !== 'factura' || v.trim().length >= 3 ? '' : 'Escribe el giro.'),
+  };
+
+  function validate(name: string) {
+    const input = form.elements.namedItem(name) as HTMLInputElement;
+    const msg = rules[name](input.value);
+    const out = form.querySelector<HTMLElement>(`[data-error-for="${name}"]`)!;
+    out.textContent = msg;
+    out.classList.toggle('hidden', !msg);
+    input.setAttribute('aria-invalid', String(!!msg));
+    if (msg) input.setAttribute('aria-describedby', out.id || (out.id = `err-${name}`));
+    else input.removeAttribute('aria-describedby');
+    return !msg;
+  }
+  Object.keys(rules).forEach((n) => (form.elements.namedItem(n) as HTMLInputElement).addEventListener('blur', () => validate(n)));
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const bad = Object.keys(rules).filter((n) => !validate(n));
+    if (bad.length) {
+      formError.textContent = `Revisa ${bad.length === 1 ? 'un campo' : `${bad.length} campos`} antes de continuar.`;
+      formError.classList.remove('hidden');
+      (form.elements.namedItem(bad[0]) as HTMLInputElement).focus();
+      return;
+    }
+    formError.classList.add('hidden');
+    const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    btn.disabled = true;
+    form.querySelector('[data-submit-label]')!.textContent = 'Confirmando pedido…';
+
+    const data = new FormData(form);
+    const keep = (k: string) => String(data.get(k) ?? '').trim();
+    let created;
+    try {
+      // the server re-prices every line and checks stock; we only send ids and quantities
+      created = await orders.create({
+        name: keep('name'),
+        phone: keep('phone'),
+        email: keep('email'),
+        delivery: delivery(),
+        street: keep('street'),
+        comuna: keep('comuna'),
+        notes: keep('notes'),
+        payment: keep('payment'),
+        doc: docType(),
+        rut: keep('rut'),
+        razon: keep('razon'),
+        giro: keep('giro'),
+      });
+    } catch (err) {
+      btn.disabled = false;
+      form.querySelector('[data-submit-label]')!.textContent = 'Confirmar pedido';
+      formError.textContent = err instanceof ApiError ? err.message : 'No pudimos confirmar el pedido. Intenta de nuevo.';
+      formError.classList.remove('hidden');
+      return;
+    }
+    if (account.user) {
+      // remember what was used, so the next checkout is one tap (best effort)
+      const known = account.user.addresses.some((a) => a.street.toLowerCase() === keep('street').toLowerCase());
+      await account.update({ name: keep('name'), phone: keep('phone'), ...(docType() === 'factura' ? { billing: { type: 'factura', rut: formatRut(keep('rut')), razon: keep('razon'), giro: keep('giro'), direccion: account.user.billing.direccion } } : {}) }).catch(() => {});
+      if (delivery() === 'despacho' && !known) await account.saveAddress({ label: 'Dirección', street: keep('street'), comuna: keep('comuna'), notes: keep('notes') }).catch(() => {});
+    }
+    cart.clear();
+    location.href = `/tienda/pedido?n=${encodeURIComponent(created.number)}&t=${encodeURIComponent(created.access)}`;
+  });
+</script>

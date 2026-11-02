@@ -1,0 +1,393 @@
+---
+import { jsonForScript } from '../../lib/security';
+import { getImage } from 'astro:assets';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { products, imageFor, shortName, formatLabel, families } from '../../data/catalog';
+
+const catalog = await Promise.all(
+  products.map(async (p) => {
+    const src = imageFor(p.images[0]);
+    return {
+      id: p.id,
+      slug: p.slug,
+      name: shortName(p),
+      format: formatLabel(p),
+      family: p.family,
+      price: p.price,
+      regularPrice: p.regularPrice,
+      inStock: p.inStock,
+      lowStock: p.lowStock,
+      img: src ? (await getImage({ src, width: 96, format: 'webp' })).src : '',
+    };
+  }),
+);
+const familyLabels = Object.fromEntries(families.map((f) => [f.id, f.label]));
+
+const icons = {
+  dashboard: 'M4 13h6V4H4zM14 20h6V11h-6zM4 20h6v-3H4zM14 7h6V4h-6z',
+  orders: 'M3 7.5 12 3l9 4.5v9L12 21l-9-4.5zM3 7.5l9 4.5 9-4.5M12 12v9',
+  products: 'M4 7h16l-1.5 12a2 2 0 0 1-2 1.8h-9a2 2 0 0 1-2-1.8zM8 7V5a4 4 0 0 1 8 0v2',
+  customers: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21a7 7 0 0 1 14 0M16 3.5a4 4 0 0 1 0 7.5M22 21a7 7 0 0 0-4-6.3',
+  messages: 'M4 5h16v11H8l-4 4z',
+  content: 'M4 6h16M4 12h10M4 18h7',
+  team: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z',
+  activity: 'M3 12h4l3-8 4 16 3-8h4',
+  system: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z',
+  logout: 'M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10',
+  external: 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5',
+};
+const nav = [
+  { id: 'dashboard', label: 'Resumen', group: 'Negocio' },
+  { id: 'orders', label: 'Pedidos', group: 'Negocio' },
+  { id: 'products', label: 'Productos', group: 'Negocio' },
+  { id: 'customers', label: 'Clientes', group: 'Negocio' },
+  { id: 'messages', label: 'Mensajes', group: 'Negocio' },
+  { id: 'content', label: 'Contenido del sitio', group: 'Negocio' },
+  { id: 'team', label: 'Equipo y roles', group: 'Técnico' },
+  { id: 'activity', label: 'Registro de actividad', group: 'Técnico' },
+  { id: 'system', label: 'Sistema', group: 'Técnico' },
+] as const;
+
+const field = 'body-6 w-full rounded-lg bg-white px-3 py-2 ring-1 ring-ink/15 placeholder:text-ink/35 focus:ring-2 focus:ring-ink focus:outline-none';
+const card = 'rounded-2xl bg-white ring-1 ring-ink/10';
+const h2 = 'heading-5';
+---
+
+<AdminLayout>
+  <script is:inline type="application/json" id="admin-catalog" set:html={jsonForScript({ catalog, familyLabels })} />
+
+  <!-- ============ Sign in (every step is checked by the server) ============ -->
+  <main data-login hidden class="grid min-h-svh place-items-center px-4 py-16">
+    <div class="w-full max-w-md">
+      <div class="flex items-center justify-between gap-4">
+        <a href="/" aria-label="Primor, ir al inicio" class="inline-block rounded-xl bg-white px-4 py-3 ring-1 ring-ink/10"><img src="/img/logo.webp" alt="Primor" width="120" height="55" class="h-8 w-auto" /></a>
+        <a href="/" class="button-sm inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 ring-1 ring-ink/10 transition-colors duration-300 ease-out-soft hover:bg-ink hover:text-cream focus-visible:outline-2 focus-visible:outline-red">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+          Volver al inicio
+        </a>
+      </div>
+      <h1 class="heading-4 mt-8">Panel de administración</h1>
+      <p data-login-sub class="body-6 mt-2 text-ink/60">Acceso exclusivo para el equipo de Primor.</p>
+
+      <!-- 0. first run: create the IT account with the setup code from the server's environment -->
+      <form data-step="setup" hidden novalidate class:list={[card, 'mt-8 grid gap-4 p-6']}>
+        <p class="title-3">Configuración inicial</p>
+        <p class="body-6 text-ink/60">Crea la primera cuenta (informático). Necesitas el código <code class="rounded bg-ink/5 px-1">ADMIN_SETUP_TOKEN</code> configurado en el servidor.</p>
+        <div><label for="su-token" class="caption-4 mb-2 block text-ink/70">Código de instalación</label><input id="su-token" name="token" autocomplete="off" class={field} /></div>
+        <div><label for="su-name" class="caption-4 mb-2 block text-ink/70">Tu nombre</label><input id="su-name" name="name" autocomplete="name" class={field} /></div>
+        <div><label for="su-email" class="caption-4 mb-2 block text-ink/70">Correo</label><input id="su-email" name="email" type="email" autocomplete="username" class={field} /></div>
+        <div><label for="su-pass" class="caption-4 mb-2 block text-ink/70">Contraseña (12 caracteres o más)</label><input id="su-pass" name="password" type="password" autocomplete="new-password" class={field} /></div>
+        <button type="submit" class="btn btn-ink justify-center">Crear cuenta de informático</button>
+      </form>
+
+      <!-- 1. email + password -->
+      <form data-step="password" hidden novalidate class:list={[card, 'mt-8 grid gap-4 p-6']}>
+        <div><label for="admin-email" class="caption-4 mb-2 block text-ink/70">Correo del equipo</label><input id="admin-email" name="email" type="email" autocomplete="username" class={field} placeholder="nombre@primor.cl" /></div>
+        <div><label for="admin-pass" class="caption-4 mb-2 block text-ink/70">Contraseña</label><input id="admin-pass" name="password" type="password" autocomplete="current-password" class={field} /></div>
+        <button type="submit" class="btn btn-ink justify-center">Continuar</button>
+      </form>
+
+      <!-- 2a. first login: link an authenticator app -->
+      <form data-step="enroll" hidden novalidate class:list={[card, 'mt-8 grid gap-4 p-6']}>
+        <p class="title-3">Activa la verificación en dos pasos</p>
+        <ol class="body-6 grid list-decimal gap-1 pl-5 text-ink/70">
+          <li>Abre Google Authenticator, Microsoft Authenticator o 1Password.</li>
+          <li>Escanea este código o escribe la clave.</li>
+          <li>Ingresa el código de 6 dígitos que muestra la app.</li>
+        </ol>
+        <div data-qr class="mx-auto size-[200px] overflow-hidden rounded-xl ring-1 ring-ink/10"></div>
+        <p class="caption-4 text-center text-ink/60">Clave: <code data-secret class="rounded bg-ink/5 px-1 break-all"></code></p>
+        <div><label for="enroll-code" class="caption-4 mb-2 block text-ink/70">Código de la app</label><input id="enroll-code" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" class:list={[field, 'tabular-nums tracking-widest']} /></div>
+        <button type="submit" class="btn btn-ink justify-center">Activar y entrar</button>
+      </form>
+
+      <!-- 2b. regular login: code from the app -->
+      <form data-step="totp" hidden novalidate class:list={[card, 'mt-8 grid gap-4 p-6']}>
+        <p class="title-3">Verificación en dos pasos</p>
+        <p class="body-6 text-ink/60">Escribe el código de 6 dígitos de tu app de autenticación.</p>
+        <div><label for="totp-code" class="caption-4 mb-2 block text-ink/70">Código</label><input id="totp-code" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" class:list={[field, 'tabular-nums tracking-widest']} /></div>
+        <button type="submit" class="btn btn-ink justify-center">Entrar</button>
+        <button type="button" data-restart class="caption-4 text-ink/50 hover:text-ink">← Volver a la contraseña</button>
+      </form>
+
+      <!-- 3. temporary password: must be replaced before using the panel -->
+      <form data-step="change" hidden novalidate class:list={[card, 'mt-8 grid gap-4 p-6']}>
+        <p class="title-3">Crea tu contraseña</p>
+        <p class="body-6 text-ink/60">Entraste con una contraseña temporal. Elige una propia: 12 caracteres o más, combinando mayúsculas, minúsculas, números o símbolos.</p>
+        <div><label for="ch-current" class="caption-4 mb-2 block text-ink/70">Contraseña temporal</label><input id="ch-current" name="current" type="password" autocomplete="current-password" class={field} /></div>
+        <div><label for="ch-next" class="caption-4 mb-2 block text-ink/70">Nueva contraseña</label><input id="ch-next" name="next" type="password" autocomplete="new-password" class={field} /></div>
+        <button type="submit" class="btn btn-ink justify-center">Guardar y entrar</button>
+      </form>
+
+      <p data-login-error role="alert" class="caption-5 mt-3 hidden text-red"></p>
+      <p class="body-6 mt-6 text-center text-ink/60">¿Llegaste aquí por error? <a href="/" class="body-4 text-ink underline underline-offset-4">Ir a la página de Primor</a> o <a href="/tienda" class="body-4 text-ink underline underline-offset-4">a la tienda</a>.</p>
+    </div>
+  </main>
+
+  <!-- ============ Panel ============ -->
+  <div data-app hidden class="min-h-svh lg:grid lg:grid-cols-[264px_1fr]">
+    <!-- Sidebar -->
+    <aside data-sidebar class="fixed inset-y-0 left-0 z-40 flex w-[264px] -translate-x-full flex-col bg-ink text-cream transition-transform duration-500 ease-out-soft data-[open]:translate-x-0 lg:sticky lg:top-0 lg:h-svh lg:translate-x-0">
+      <div class="flex items-center justify-between gap-2 p-4">
+        <a href="/admin" class="flex items-center gap-2 rounded-lg bg-cream px-3 py-2"><img src="/img/logo.webp" alt="Primor" width="90" height="41" class="h-6 w-auto" /></a>
+        <span class="caption-3 rounded-full bg-cream/10 px-2 py-1 !tracking-normal text-cream/70">Admin</span>
+      </div>
+      <nav aria-label="Panel" class="flex-1 overflow-y-auto px-3 pb-4">
+        {['Negocio', 'Técnico'].map((g) => (
+          <div data-group={g} class="mt-4">
+            <p class="caption-3 px-3 pb-2 text-cream/40">{g}</p>
+            <ul class="grid gap-1">
+              {nav.filter((n) => n.group === g).map((n) => (
+                <li data-perm={n.id}>
+                  <a href={`#${n.id}`} data-tab={n.id} class="title-4 flex items-center gap-3 rounded-lg px-3 py-2 text-cream/70 transition-colors duration-300 ease-out-soft hover:bg-cream/10 hover:text-cream aria-[current=page]:bg-yellow aria-[current=page]:text-ink">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0"><path d={icons[n.id]} /></svg>
+                    <span class="flex-1">{n.label}</span>
+                    <span data-count={n.id} class="caption-3 hidden rounded-full bg-red px-2 py-0.5 !tracking-normal text-cream"></span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </nav>
+      <div class="border-t border-cream/10 p-4">
+        <div class="flex items-center gap-3">
+          <span data-me-avatar class="title-3 grid size-9 place-items-center rounded-full bg-yellow text-ink"></span>
+          <div class="min-w-0 flex-1">
+            <p data-me-name class="title-4 truncate"></p>
+            <p data-me-role class="caption-5 text-cream/50"></p>
+          </div>
+        </div>
+        <div class="mt-4 grid grid-cols-2 gap-2">
+          <a href="/" target="_blank" rel="noopener" class="button-sm flex items-center justify-center gap-1 rounded-lg bg-cream/10 px-2 py-2 hover:bg-cream/20">
+            Ver sitio <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5"><path d={icons.external} /></svg>
+          </a>
+          <button type="button" data-logout class="button-sm flex items-center justify-center gap-1 rounded-lg bg-cream/10 px-2 py-2 hover:bg-cream/20">Salir</button>
+        </div>
+        <button type="button" data-open-password class="caption-4 mt-3 w-full text-center text-cream/50 hover:text-cream">Cambiar mi contraseña</button>
+      </div>
+    </aside>
+    <div data-scrim hidden class="fixed inset-0 z-30 bg-ink/40 lg:hidden"></div>
+
+    <!-- Main -->
+    <div class="min-w-0">
+      <header class="sticky top-0 z-20 flex items-center gap-4 border-b border-ink/10 bg-[#f6f3ec]/90 px-4 py-3 backdrop-blur sm:px-8">
+        <button type="button" data-menu aria-label="Abrir menú" class="grid size-10 place-items-center rounded-lg ring-1 ring-ink/15 lg:hidden">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="size-5"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </button>
+        <h1 data-title class="title-2 flex-1"></h1>
+        <span class="caption-4 hidden rounded-full bg-yellow px-3 py-1 sm:inline">Modo demostración</span>
+      </header>
+
+      <div class="px-4 py-8 sm:px-8">
+        <!-- Dashboard -->
+        <section data-panel="dashboard" hidden>
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p data-greeting class="heading-4"></p>
+              <p class="body-6 mt-1 text-ink/60">Así va la tienda en los últimos 14 días.</p>
+            </div>
+            <button type="button" data-seed class="btn button-sm bg-ink/5 text-ink">Cargar datos de ejemplo</button>
+          </div>
+          <ul class="mt-6 grid grid-cols-2 gap-2 sm:gap-4 xl:grid-cols-4">
+            <li class:list={[card, 'p-5']}><p class="caption-4 text-ink/50">Ventas · 14 días</p><p data-kpi="sales" class="heading-4 mt-2 tabular-nums">$0</p><p data-kpi="sales-note" class="caption-5 mt-1 text-ink/50"></p></li>
+            <li class:list={[card, 'p-5']}><p class="caption-4 text-ink/50">Pedidos · 14 días</p><p data-kpi="orders" class="heading-4 mt-2 tabular-nums">0</p><p data-kpi="avg" class="caption-5 mt-1 text-ink/50"></p></li>
+            <li class:list={[card, 'p-5']}><p class="caption-4 text-ink/50">Por preparar o despachar</p><p data-kpi="pending" class="heading-4 mt-2 tabular-nums">0</p><a href="#orders" class="caption-5 mt-1 inline-block text-red hover:underline">Ver pedidos →</a></li>
+            <li class:list={[card, 'p-5']}><p class="caption-4 text-ink/50">Mensajes nuevos</p><p data-kpi="messages" class="heading-4 mt-2 tabular-nums">0</p><a href="#messages" class="caption-5 mt-1 inline-block text-red hover:underline">Ver bandeja →</a></li>
+          </ul>
+
+          <div class="mt-4 grid gap-4 xl:grid-cols-[2fr_1fr]">
+            <figure class:list={[card, 'p-5']}>
+              <figcaption class="flex items-baseline justify-between">
+                <span class="title-3">Ventas por día</span>
+                <button type="button" data-chart-table-toggle class="caption-4 text-ink/50 underline-offset-4 hover:underline">Ver como tabla</button>
+              </figcaption>
+              <div data-chart class="relative mt-4 h-56"></div>
+              <table data-chart-table hidden class="body-6 mt-4 w-full"><thead><tr class="text-left text-ink/50"><th class="py-1 font-medium">Día</th><th class="py-1 text-right font-medium">Ventas</th><th class="py-1 text-right font-medium">Pedidos</th></tr></thead><tbody></tbody></table>
+            </figure>
+            <div class:list={[card, 'p-5']}>
+              <p class="title-3">Más vendidos</p>
+              <ol data-top class="mt-4 grid gap-3"></ol>
+            </div>
+          </div>
+
+          <div class="mt-4 grid gap-4 xl:grid-cols-2">
+            <div class:list={[card, 'p-5']}>
+              <div class="flex items-baseline justify-between"><p class="title-3">Últimos pedidos</p><a href="#orders" class="caption-4 text-ink/50 hover:underline">Ver todos</a></div>
+              <ul data-recent class="mt-4 divide-y divide-ink/10"></ul>
+            </div>
+            <div class:list={[card, 'p-5']}>
+              <div class="flex items-baseline justify-between"><p class="title-3">Alertas de stock</p><a href="#products" class="caption-4 text-ink/50 hover:underline">Ver productos</a></div>
+              <ul data-alerts class="mt-4 divide-y divide-ink/10"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Orders -->
+        <section data-panel="orders" hidden>
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div data-order-filters role="group" aria-label="Filtrar por estado" class="flex flex-wrap gap-2"></div>
+            <input data-order-search type="search" placeholder="Buscar número, cliente o comuna" class:list={[field, 'lg:w-72']} />
+          </div>
+          <div class:list={[card, 'mt-4 overflow-x-auto']}>
+            <table class="body-6 w-full min-w-[760px]">
+              <thead class="caption-4 text-left text-ink/50"><tr class="border-b border-ink/10"><th class="p-4 font-medium">Pedido</th><th class="p-4 font-medium">Fecha</th><th class="p-4 font-medium">Cliente</th><th class="p-4 font-medium">Entrega</th><th class="p-4 font-medium">Documento</th><th class="p-4 text-right font-medium">Total</th><th class="p-4 font-medium">Estado</th></tr></thead>
+              <tbody data-orders class="divide-y divide-ink/10"></tbody>
+            </table>
+            <p data-orders-empty hidden class="body-6 p-8 text-center text-ink/50">No hay pedidos con esos filtros.</p>
+          </div>
+        </section>
+
+        <!-- Products -->
+        <section data-panel="products" hidden>
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <p class="body-6 text-ink/60">Los cambios se ven al instante en la tienda de este navegador.</p>
+            <input data-product-search type="search" placeholder="Buscar producto" class:list={[field, 'lg:w-72']} />
+          </div>
+          <div class:list={[card, 'mt-4 overflow-x-auto']}>
+            <table class="body-6 w-full min-w-[820px]">
+              <thead class="caption-4 text-left text-ink/50"><tr class="border-b border-ink/10"><th class="p-4 font-medium">Producto</th><th class="p-4 font-medium">Categoría</th><th class="p-4 font-medium">Precio</th><th class="p-4 font-medium">Quedan</th><th class="p-4 font-medium">Disponible</th><th class="p-4 font-medium">Visible</th><th class="p-4"></th></tr></thead>
+              <tbody data-products class="divide-y divide-ink/10"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Customers -->
+        <section data-panel="customers" hidden>
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <p data-customers-summary class="body-6 text-ink/60"></p>
+            <input data-customer-search type="search" placeholder="Buscar nombre o correo" class:list={[field, 'lg:w-72']} />
+          </div>
+          <div class:list={[card, 'mt-4 overflow-x-auto']}>
+            <table class="body-6 w-full min-w-[720px]">
+              <thead class="caption-4 text-left text-ink/50"><tr class="border-b border-ink/10"><th class="p-4 font-medium">Cliente</th><th class="p-4 font-medium">Teléfono</th><th class="p-4 font-medium">Documento</th><th class="p-4 text-right font-medium">Pedidos</th><th class="p-4 text-right font-medium">Total</th><th class="p-4 font-medium">Cliente desde</th></tr></thead>
+              <tbody data-customers class="divide-y divide-ink/10"></tbody>
+            </table>
+            <p data-customers-empty hidden class="body-6 p-8 text-center text-ink/50">Aún no hay clientes registrados.</p>
+          </div>
+        </section>
+
+        <!-- Messages -->
+        <section data-panel="messages" hidden>
+          <div data-message-filters role="group" aria-label="Filtrar mensajes" class="flex flex-wrap gap-2"></div>
+          <ul data-messages class="mt-4 grid gap-2"></ul>
+          <p data-messages-empty hidden class:list={[card, 'body-6 mt-4 p-8 text-center text-ink/50']}>No hay mensajes en esta bandeja.</p>
+        </section>
+
+        <!-- Content -->
+        <section data-panel="content" hidden>
+          <div class="grid gap-4 xl:grid-cols-2">
+            <form data-announcement class:list={[card, 'grid gap-4 p-6']}>
+              <div>
+                <h2 class={h2}>Aviso en la parte superior</h2>
+                <p class="body-6 mt-1 text-ink/60">Una franja visible en todas las páginas. Úsala para promociones, feriados o cambios de horario.</p>
+              </div>
+              <div>
+                <label for="an-text" class="caption-4 mb-2 block text-ink/70">Texto</label>
+                <input id="an-text" name="text" maxlength="110" class={field} placeholder="Este sábado la sala de venta cierra a las 14:00" />
+              </div>
+              <div>
+                <label for="an-href" class="caption-4 mb-2 block text-ink/70">Enlace (opcional)</label>
+                <input id="an-href" name="href" class={field} placeholder="/tienda?c=cajas" />
+              </div>
+              <label class="body-6 flex items-center gap-2"><input type="checkbox" name="active" class="size-4 accent-ink" /> Mostrar en el sitio</label>
+              <div class="rounded-xl bg-ink/5 p-3">
+                <p class="caption-4 text-ink/50">Vista previa</p>
+                <p data-an-preview class="body-5 mt-2 rounded-lg bg-red px-4 py-2 text-center text-cream">Tu aviso aparecerá aquí</p>
+              </div>
+              <div><button type="submit" class="btn btn-ink"><span data-an-label>Guardar aviso</span></button></div>
+            </form>
+            <div class:list={[card, 'p-6']}>
+              <h2 class={h2}>Datos de la empresa</h2>
+              <p class="body-6 mt-1 text-ink/60">Se muestran en el inicio, el contacto y el footer.</p>
+              <dl data-company class="mt-4 divide-y divide-ink/10"></dl>
+              <p class="caption-5 mt-4 text-ink/50">Hoy se editan en <code class="rounded bg-ink/5 px-1">src/data/site.ts</code>. Con un backend conectado, este formulario los guardaría directo.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Team -->
+        <section data-panel="team" hidden>
+          <div class="grid gap-4 xl:grid-cols-[2fr_1fr]">
+            <div class:list={[card, 'overflow-x-auto']}>
+              <table class="body-6 w-full min-w-[680px]">
+                <thead class="caption-4 text-left text-ink/50"><tr class="border-b border-ink/10"><th class="p-4 font-medium">Persona</th><th class="p-4 font-medium">Rol</th><th class="p-4 font-medium">Seguridad</th><th class="p-4 font-medium">Desde</th><th class="p-4"></th></tr></thead>
+                <tbody data-team class="divide-y divide-ink/10"></tbody>
+              </table>
+            </div>
+            <form data-team-form novalidate class:list={[card, 'grid gap-4 p-6 xl:self-start']}>
+              <h2 class={h2}>Agregar persona</h2>
+              <div><label for="tm-name" class="caption-4 mb-2 block text-ink/70">Nombre</label><input id="tm-name" name="name" class={field} /></div>
+              <div><label for="tm-email" class="caption-4 mb-2 block text-ink/70">Correo</label><input id="tm-email" name="email" type="email" class={field} /></div>
+              <div>
+                <label for="tm-role" class="caption-4 mb-2 block text-ink/70">Rol</label>
+                <select id="tm-role" name="role" class={field}><option value="owner">Dueño · negocio</option><option value="dev">Informático · acceso total</option></select>
+              </div>
+              <p data-team-error role="alert" class="caption-5 hidden text-red"></p>
+              <button type="submit" class="btn btn-ink justify-center">Agregar</button>
+            </form>
+          </div>
+          <div class:list={[card, 'mt-4 overflow-x-auto p-6']}>
+            <h2 class={h2}>Qué puede hacer cada rol</h2>
+            <table data-matrix class="body-6 mt-4 w-full min-w-[480px]"></table>
+          </div>
+        </section>
+
+        <!-- Activity -->
+        <section data-panel="activity" hidden>
+          <div class:list={[card, 'overflow-x-auto']}>
+            <table class="body-6 w-full min-w-[600px]">
+              <thead class="caption-4 text-left text-ink/50"><tr class="border-b border-ink/10"><th class="p-4 font-medium">Cuándo</th><th class="p-4 font-medium">Quién</th><th class="p-4 font-medium">Acción</th></tr></thead>
+              <tbody data-activity class="divide-y divide-ink/10"></tbody>
+            </table>
+            <p data-activity-empty hidden class="body-6 p-8 text-center text-ink/50">Sin actividad registrada.</p>
+          </div>
+        </section>
+
+        <!-- System -->
+        <section data-panel="system" hidden>
+          <div class="grid gap-4 xl:grid-cols-2">
+            <div class:list={[card, 'p-6']}>
+              <h2 class={h2}>Integraciones</h2>
+              <ul data-integrations class="mt-4 divide-y divide-ink/10"></ul>
+            </div>
+            <div class:list={[card, 'p-6']}>
+              <h2 class={h2}>Respaldo de datos</h2>
+              <p class="body-6 mt-1 text-ink/60">Descarga pedidos, clientes, mensajes, ajustes y registro en un archivo JSON. Contiene datos personales: guárdalo en un lugar seguro.</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <button type="button" data-export class="btn btn-ink button-sm">Descargar respaldo</button>
+              </div>
+              <h3 class="title-3 mt-8">Base de datos</h3>
+              <ul data-usage class="mt-2 grid gap-1"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- No permission -->
+        <section data-panel="denied" hidden class:list={[card, 'p-8 text-center']}>
+          <p class="title-2">No tienes acceso a esta sección</p>
+          <p class="body-6 mt-2 text-ink/60">Pídele al informático que revise tu rol.</p>
+          <a href="#dashboard" class="btn btn-ink button-sm mt-4">Volver al resumen</a>
+        </section>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<dialog data-pw-dialog aria-labelledby="pw-title" class="m-auto w-[min(92vw,420px)] rounded-2xl bg-white p-0 text-ink backdrop:bg-ink/40">
+  <form data-pw-form novalidate class="grid gap-4 p-6">
+    <h2 id="pw-title" class="heading-6">Cambiar mi contraseña</h2>
+    <div><label for="pw-current" class="caption-4 mb-2 block text-ink/70">Contraseña actual</label><input id="pw-current" name="current" type="password" autocomplete="current-password" class={field} /></div>
+    <div><label for="pw-next" class="caption-4 mb-2 block text-ink/70">Nueva contraseña</label><input id="pw-next" name="next" type="password" autocomplete="new-password" class={field} /></div>
+    <p data-pw-error role="alert" class="caption-5 hidden text-red"></p>
+    <p class="caption-5 text-ink/50">Al cambiarla se cierran tus sesiones en otros dispositivos.</p>
+    <div class="flex justify-end gap-2">
+      <button type="button" data-pw-cancel class="btn button-sm bg-ink/5 text-ink">Cancelar</button>
+      <button type="submit" class="btn btn-ink button-sm">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  import '../../scripts/admin';
+</script>

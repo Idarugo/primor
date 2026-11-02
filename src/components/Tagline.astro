@@ -1,0 +1,15 @@
+---
+const lines = ['Para compartirlas en familia,', 'con amigos o en esos momentos', 'que merecen algo crujiente.'];
+---
+
+<section aria-label="Lo que nos mueve" class="relative bg-ink px-4 py-24 sm:py-32">
+  <p data-tagline class="heading-3 mx-auto max-w-[680px] sm:heading-1">
+    {lines.map((line) => (
+      <span class="block">
+        {line.split(' ').map((w) => (
+          <span class="reveal-word">{w} </span>
+        ))}
+      </span>
+    ))}
+  </p>
+</section>

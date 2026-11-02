@@ -1,0 +1,548 @@
+---
+import { address, MAPS_URL, CONTACT_URL, INSTAGRAM_URL } from '../../data/site';
+
+// 24px stroke icons drawn for the account sidebar.
+const icons = {
+  resumen: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z',
+  pedidos: 'M3 7.5 12 3l9 4.5v9L12 21l-9-4.5zM3 7.5l9 4.5 9-4.5M12 12v9',
+  direcciones: 'M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21zM12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z',
+  facturacion: 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6M9 16h3',
+  datos: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0',
+  ayuda: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5v.01',
+  salir: 'M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10',
+};
+const sections = [
+  { id: 'resumen', label: 'Resumen' },
+  { id: 'pedidos', label: 'Mis pedidos' },
+  { id: 'direcciones', label: 'Direcciones' },
+  { id: 'facturacion', label: 'Facturación' },
+  { id: 'datos', label: 'Mis datos' },
+  { id: 'ayuda', label: 'Ayuda' },
+] as const;
+
+const field = 'body-6 w-full rounded-xl bg-white px-4 py-3 ring-1 ring-ink/15 placeholder:text-ink/40 focus:ring-2 focus:ring-ink focus:outline-none aria-invalid:ring-2 aria-invalid:ring-red';
+const label = 'title-4 mb-2 block';
+const card = 'rounded-3xl bg-white p-6 ring-1 ring-ink/5';
+---
+
+<section data-member hidden class="mx-auto max-w-7xl px-4 pt-24 pb-24 sm:px-8 sm:pt-28">
+  <div class="grid gap-6 lg:grid-cols-[280px_1fr] lg:gap-8">
+    <!-- Sidebar -->
+    <aside class="min-w-0 lg:sticky lg:top-24 lg:self-start">
+      <div class="rounded-3xl bg-ink p-4 text-cream lg:p-6">
+        <div class="flex items-center gap-4 lg:flex-col lg:items-start">
+          <span data-avatar aria-hidden="true" class="heading-6 grid size-12 shrink-0 place-items-center rounded-full bg-yellow text-ink lg:size-16"></span>
+          <div class="min-w-0">
+            <p data-side-name class="title-2 truncate"></p>
+            <p data-side-email class="caption-5 truncate text-cream/60"></p>
+          </div>
+        </div>
+
+        <nav aria-label="Secciones de mi cuenta" class="-mx-4 mt-4 overflow-x-auto px-4 [scrollbar-width:none] lg:mx-0 lg:mt-8 lg:overflow-visible lg:px-0">
+          <ul class="flex gap-2 lg:flex-col lg:gap-1">
+            {sections.map((s) => (
+              <li class="shrink-0">
+                <a
+                  href={`#${s.id}`}
+                  data-tab={s.id}
+                  class="title-4 group flex items-center gap-3 rounded-full px-4 py-2 whitespace-nowrap text-cream/70 transition-colors duration-300 ease-out-soft hover:bg-cream/10 hover:text-cream aria-[current=page]:bg-yellow aria-[current=page]:text-ink lg:rounded-xl lg:py-3"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0"><path d={icons[s.id]} /></svg>
+                  {s.label}
+                  <span data-badge={s.id} class="caption-3 ml-auto hidden rounded-full bg-cream/15 px-2 py-0.5 !tracking-normal group-aria-[current=page]:bg-ink/10"></span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div class="mt-8 hidden border-t border-cream/10 pt-4 lg:block">
+          <a href="/arma-tu-caja" class="btn btn-primary button-sm w-full justify-center">Arma tu caja</a>
+          <button type="button" data-signout class="title-4 mt-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-cream/60 transition-colors duration-300 ease-out-soft hover:bg-cream/10 hover:text-cream">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="size-5"><path d={icons.salir} /></svg>
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Panels -->
+    <div class="min-w-0">
+      <!-- Resumen -->
+      <section data-panel="resumen" aria-labelledby="t-resumen">
+        <p class="caption-3 text-red">Mi cuenta</p>
+        <h1 id="t-resumen" class="heading-3 mt-2 sm:heading-2">Hola, <span data-hello></span></h1>
+        <p data-member-since class="body-6 mt-2 text-ink/60"></p>
+
+        <ul class="mt-8 grid gap-2 sm:grid-cols-3 sm:gap-4">
+          <li class={card}><p class="caption-4 text-ink/50">Pedidos</p><p data-stat-orders class="heading-4 mt-2 tabular-nums">0</p></li>
+          <li class={card}><p class="caption-4 text-ink/50">Total comprado</p><p data-stat-spent class="heading-4 mt-2 tabular-nums">$0</p></li>
+          <li class={card}><p class="caption-4 text-ink/50">Tu favorito</p><p data-stat-fav class="title-2 mt-2 line-clamp-2">Aún no hay</p></li>
+        </ul>
+
+        <div class="mt-4 grid gap-4 md:grid-cols-2">
+          <div data-last-order class={card}>
+            <p class="title-2">Último pedido</p>
+            <div data-last-body class="mt-4"></div>
+          </div>
+          <div class="rounded-3xl bg-yellow p-6">
+            <p class="title-2">Atajos</p>
+            <div class="mt-4 grid gap-2">
+              <a href="/tienda" class="btn btn-ink button-sm justify-center">Ir a la tienda</a>
+              <a href="/arma-tu-caja" class="btn button-sm justify-center bg-ink/10 text-ink">Arma tu caja</a>
+              <a href="#direcciones" class="btn button-sm justify-center bg-ink/10 text-ink">Agregar una dirección</a>
+            </div>
+          </div>
+        </div>
+
+        <ul data-checklist class="mt-4 grid gap-2 rounded-3xl bg-ink/5 p-6"></ul>
+      </section>
+
+      <!-- Pedidos -->
+      <section data-panel="pedidos" hidden aria-labelledby="t-pedidos">
+        <h2 id="t-pedidos" class="heading-4 sm:heading-3">Mis pedidos</h2>
+        <ul data-orders class="mt-6 grid gap-4"></ul>
+        <div data-no-orders hidden class:list={[card, 'mt-6 flex flex-col items-start gap-4']}>
+          <svg aria-hidden="true" class="size-16 -rotate-12"><use href="#chip-2" /></svg>
+          <p class="title-2">Todavía no tienes pedidos</p>
+          <p class="body-6 text-ink/60">Parte por la caja más vendida o arma la tuya.</p>
+          <div class="flex flex-wrap gap-2">
+            <a href="/arma-tu-caja" class="btn btn-ink">Arma tu caja</a>
+            <a href="/tienda" class="btn bg-ink/5 text-ink">Ir a la tienda</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Direcciones -->
+      <section data-panel="direcciones" hidden aria-labelledby="t-dir">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <h2 id="t-dir" class="heading-4 sm:heading-3">Direcciones</h2>
+          <button type="button" data-add-address class="btn btn-ink button-sm">Agregar dirección</button>
+        </div>
+        <p class="body-6 mt-2 text-ink/60">La predeterminada se usa sola en el checkout.</p>
+        <ul data-addresses class="mt-6 grid gap-4 md:grid-cols-2"></ul>
+        <p data-no-addresses hidden class:list={[card, 'body-6 mt-6 text-ink/60']}>Aún no guardas direcciones. Si siempre retiras en la sala de venta, no necesitas una.</p>
+
+        <form data-address-form hidden novalidate class:list={[card, 'mt-6 grid gap-4 sm:grid-cols-2']}>
+          <input type="hidden" name="id" />
+          <p data-address-form-title class="heading-6 sm:col-span-2">Nueva dirección</p>
+          <div>
+            <label for="a-label" class={label}>Nombre</label>
+            <input id="a-label" name="label" class={field} placeholder="Casa, oficina, la casa de mi mamá" />
+          </div>
+          <div>
+            <label for="a-comuna" class={label}>Comuna</label>
+            <input id="a-comuna" name="comuna" required autocomplete="address-level2" class={field} placeholder="Rancagua" />
+            <p data-err="comuna" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="a-street" class={label}>Dirección</label>
+            <input id="a-street" name="street" required autocomplete="street-address" class={field} placeholder="Av. Libertador 1234, depto 56" />
+            <p data-err="street" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="a-notes" class={label}>Indicaciones <span class="text-ink/40">(opcional)</span></label>
+            <input id="a-notes" name="notes" class={field} placeholder="Timbre, portería, horario" />
+          </div>
+          <label class="body-6 flex items-center gap-2 sm:col-span-2"><input type="checkbox" name="default" class="size-4 accent-ink" /> Usar como predeterminada</label>
+          <div class="flex gap-2 sm:col-span-2">
+            <button type="submit" class="btn btn-ink">Guardar dirección</button>
+            <button type="button" data-cancel-address class="btn bg-ink/5 text-ink">Cancelar</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Facturación -->
+      <section data-panel="facturacion" hidden aria-labelledby="t-fac">
+        <h2 id="t-fac" class="heading-4 sm:heading-3">Facturación</h2>
+        <p class="body-6 mt-2 text-ink/60">Elige qué documento quieres por defecto. Lo puedes cambiar en cada compra.</p>
+        <form data-billing-form novalidate class:list={[card, 'mt-6 grid gap-4']}>
+          <div class="grid gap-2 sm:grid-cols-2">
+            <label class="flex cursor-pointer gap-3 rounded-2xl p-4 ring-1 ring-ink/15 has-checked:ring-2 has-checked:ring-ink">
+              <input type="radio" name="type" value="boleta" class="mt-1 accent-ink" />
+              <span><span class="title-3 block">Boleta</span><span class="caption-5 text-ink/60">Para compras personales</span></span>
+            </label>
+            <label class="flex cursor-pointer gap-3 rounded-2xl p-4 ring-1 ring-ink/15 has-checked:ring-2 has-checked:ring-ink">
+              <input type="radio" name="type" value="factura" class="mt-1 accent-ink" />
+              <span><span class="title-3 block">Factura</span><span class="caption-5 text-ink/60">Para almacenes, botillerías y empresas</span></span>
+            </label>
+          </div>
+          <div data-factura-fields class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="b-rut" class={label}>RUT empresa</label>
+              <input id="b-rut" name="rut" inputmode="text" class={field} placeholder="76.123.456-0" />
+              <p data-err="rut" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+            <div>
+              <label for="b-razon" class={label}>Razón social</label>
+              <input id="b-razon" name="razon" autocomplete="organization" class={field} placeholder="Almacén Doña Rosa SpA" />
+              <p data-err="razon" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+            <div>
+              <label for="b-giro" class={label}>Giro</label>
+              <input id="b-giro" name="giro" class={field} placeholder="Venta de abarrotes" />
+              <p data-err="giro" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+            <div>
+              <label for="b-dir" class={label}>Dirección comercial</label>
+              <input id="b-dir" name="direccion" class={field} placeholder="Calle Estado 345, Rancagua" />
+              <p data-err="direccion" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+          </div>
+          <div><button type="submit" class="btn btn-ink"><span data-billing-label>Guardar facturación</span></button></div>
+        </form>
+      </section>
+
+      <!-- Datos -->
+      <section data-panel="datos" hidden aria-labelledby="t-datos">
+        <h2 id="t-datos" class="heading-4 sm:heading-3">Mis datos</h2>
+        <form data-profile novalidate class:list={[card, 'mt-6 grid gap-4 sm:grid-cols-2']}>
+          <div>
+            <label for="p-name" class={label}>Nombre y apellido</label>
+            <input id="p-name" name="name" autocomplete="name" class={field} placeholder="Camila Rojas" />
+          </div>
+          <div>
+            <label for="p-phone" class={label}>Teléfono</label>
+            <input id="p-phone" name="phone" type="tel" autocomplete="tel" class={field} placeholder="+56 9 1234 5678" />
+            <p data-err="phone" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+          <div class="sm:col-span-2">
+            <p class={label}>Correo</p>
+            <p data-email class="body-6 rounded-xl bg-ink/5 px-4 py-3 text-ink/70"></p>
+            <p class="caption-5 mt-1 text-ink/50">Es tu forma de ingresar. Para cambiarlo, escríbenos.</p>
+          </div>
+          <label class="body-6 flex items-center gap-2 sm:col-span-2"><input type="checkbox" name="promos" class="size-4 accent-ink" /> Quiero recibir novedades y promociones por correo</label>
+          <div class="sm:col-span-2"><button type="submit" class="btn btn-ink"><span data-save-label>Guardar datos</span></button></div>
+        </form>
+      </section>
+
+      <!-- Ayuda -->
+      <section data-panel="ayuda" hidden aria-labelledby="t-ayuda">
+        <h2 id="t-ayuda" class="heading-4 sm:heading-3">Ayuda</h2>
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          <div class="rounded-3xl bg-yellow p-6">
+            <p class="title-2">Sala de venta</p>
+            <p class="body-6 mt-2">{address.street}, {address.city}</p>
+            <p class="body-6 text-ink/70">{address.hours}</p>
+            <a href={MAPS_URL} target="_blank" rel="noopener" class="btn btn-ink button-sm mt-4">Cómo llegar</a>
+          </div>
+          <div class={card}>
+            <p class="title-2">Escríbenos</p>
+            <p class="body-6 mt-2 text-ink/60">Dudas con un pedido, despachos o ventas para tu negocio.</p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <a href={CONTACT_URL} class="btn btn-ink button-sm">Formulario de contacto</a>
+              <a href={INSTAGRAM_URL} target="_blank" rel="noopener" class="btn button-sm bg-ink/5 text-ink">Instagram</a>
+            </div>
+          </div>
+          <a href="/#visitanos" class:list={[card, 'title-3 md:col-span-2 hover:ring-ink/20']}>Ver preguntas frecuentes →</a>
+        </div>
+      </section>
+
+      <button type="button" data-signout class="btn mt-8 bg-ink/5 text-ink lg:hidden">Cerrar sesión</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { account, type Profile, type AccountOrder } from '../../lib/account';
+  import { cart, clp } from '../../lib/cart';
+  import { ApiError } from '../../lib/api';
+  import { isValidRut, formatRut } from '../../lib/rut';
+  import { safeImg } from '../../lib/security';
+  import { STATUS_LABEL } from '../../lib/overrides';
+
+  type Order = AccountOrder;
+  /** Runs a save against the API; shows the server's message in `out` if it fails. */
+  async function save(fn: () => Promise<unknown>, out: HTMLElement, done: string, idle: string) {
+    out.textContent = 'Guardando…';
+    try {
+      await fn();
+      formsFilled = false; // repaint forms with what the server stored
+      account.refresh();
+      flash(out, done, idle);
+      return true;
+    } catch (err) {
+      flash(out, err instanceof ApiError ? err.message : 'No se pudo guardar.', idle);
+      return false;
+    }
+  }
+
+  const $ = <T extends HTMLElement = HTMLElement>(s: string, root: ParentNode = document) => root.querySelector<T>(s)!;
+  const $$ = <T extends HTMLElement = HTMLElement>(s: string, root: ParentNode = document) => [...root.querySelectorAll<T>(s)];
+  const el = (tag: string, cls = '', text = '') => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text) e.textContent = text;
+    return e;
+  };
+  const fmtDate = (iso: string, opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' }) => new Date(iso).toLocaleDateString('es-CL', opts);
+  const flash = (node: HTMLElement, text: string, back: string) => {
+    node.textContent = text;
+    setTimeout(() => (node.textContent = back), 1600);
+  };
+  const setErr = (form: HTMLElement, name: string, msg: string) => {
+    const out = form.querySelector<HTMLElement>(`[data-err="${name}"]`);
+    const input = form.querySelector<HTMLInputElement>(`[name="${name}"]`);
+    if (out) {
+      out.textContent = msg;
+      out.classList.toggle('hidden', !msg);
+    }
+    input?.setAttribute('aria-invalid', String(!!msg));
+    return !msg;
+  };
+
+  /* ---------- Sidebar routing (hash based, so back/forward and links work) ---------- */
+  const panels = $$('[data-panel]');
+  const tabs = $$<HTMLAnchorElement>('[data-tab]');
+  function route() {
+    const id = location.hash.slice(1);
+    const current = panels.some((p) => p.dataset.panel === id) ? id : 'resumen';
+    panels.forEach((p) => (p.hidden = p.dataset.panel !== current));
+    tabs.forEach((t) => (t.dataset.tab === current ? t.setAttribute('aria-current', 'page') : t.removeAttribute('aria-current')));
+    tabs.find((t) => t.dataset.tab === current)?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }
+  window.addEventListener('hashchange', () => {
+    route();
+    if (matchMedia('(max-width: 1023px)').matches) $('[data-member]').scrollIntoView({ block: 'start' });
+  });
+  route();
+
+  /* ---------- Orders ---------- */
+  const repeat = (o: Order) => {
+    o.lines.forEach(({ qty, ...l }) => cart.add({ ...l, max: l.max ?? 99 }, qty));
+    const units = o.lines.reduce((n, l) => n + l.qty, 0);
+    document.dispatchEvent(new CustomEvent('cart:added', { detail: { name: `Pedido ${o.number} · ${units} ${units === 1 ? 'producto' : 'productos'}`, img: o.lines[0]?.img } }));
+  };
+
+  function orderCard(o: Order, compact = false) {
+    const n = o.lines.reduce((s, l) => s + l.qty, 0);
+    const box = el('div', 'flex flex-col gap-4');
+    const top = el('div', 'flex flex-wrap items-start justify-between gap-2');
+    const head = el('div');
+    const link = el('a', 'title-2 hover:underline', o.number) as HTMLAnchorElement;
+    link.href = `/tienda/pedido?n=${o.number}`;
+    head.append(link, el('p', 'caption-5 text-ink/60', `${fmtDate(o.createdAt)} · ${n} ${n === 1 ? 'producto' : 'productos'}`));
+    const st = o.status ?? 'recibido';
+    const tone = st === 'cancelado' ? 'bg-red/10 text-red' : st === 'entregado' || st === 'listo' ? 'bg-green/15 text-green' : st === 'recibido' ? 'bg-ink/5 text-ink/70' : 'bg-yellow/50 text-ink';
+    const status = el('span', `caption-3 rounded-full px-2 py-1 !tracking-normal ${tone}`, STATUS_LABEL[st] ?? 'Recibido');
+    top.append(head, status);
+
+    const thumbs = el('div', 'flex -space-x-2');
+    o.lines.slice(0, 6).forEach((l) => {
+      const img = el('img', 'size-12 rounded-full bg-white object-contain p-0.5 ring-2 ring-white') as HTMLImageElement;
+      img.src = safeImg(l.img);
+      img.alt = '';
+      thumbs.append(img);
+    });
+
+    const bottom = el('div', 'flex flex-wrap items-center justify-between gap-2');
+    bottom.append(el('p', 'body-6 text-ink/70', `${o.delivery === 'despacho' ? `Despacho a ${o.comuna}` : 'Retiro en sala'} · ${o.payment}${o.document ? ` · ${o.document}` : ''}`));
+    const right = el('div', 'flex items-center gap-4');
+    right.append(el('span', 'heading-6 tabular-nums', clp(o.subtotal)));
+    const again = el('button', 'btn btn-ink button-sm !py-2', 'Repetir pedido') as HTMLButtonElement;
+    again.type = 'button';
+    again.addEventListener('click', () => repeat(o));
+    right.append(again);
+    bottom.append(right);
+
+    box.append(top, thumbs, bottom);
+    if (!compact) {
+      const details = el('details', 'group');
+      details.append(el('summary', 'caption-4 cursor-pointer text-ink/60 hover:text-ink', 'Ver detalle'));
+      const list = el('ul', 'mt-2 divide-y divide-ink/10');
+      o.lines.forEach((l) => {
+        const li = el('li', 'body-6 flex justify-between gap-4 py-2');
+        li.append(el('span', '', `${l.qty} × ${l.name} (${l.format})`), el('span', 'tabular-nums', clp(l.qty * l.price)));
+        list.append(li);
+      });
+      details.append(list);
+      box.append(details);
+    }
+    return box;
+  }
+
+  function renderOrders() {
+    const list = account.orders;
+    $('[data-no-orders]').hidden = list.length > 0;
+    $('[data-orders]').replaceChildren(
+      ...list.map((o) => {
+        const li = el('li', 'rounded-3xl bg-white p-6 ring-1 ring-ink/5');
+        li.append(orderCard(o));
+        return li;
+      }),
+    );
+    const badge = $('[data-badge="pedidos"]');
+    badge.textContent = String(list.length);
+    badge.classList.toggle('hidden', !list.length);
+
+    // Resumen stats
+    const spent = list.reduce((s, o) => s + o.subtotal, 0);
+    const tally = new Map<string, number>();
+    list.forEach((o) => o.lines.forEach((l) => tally.set(l.name, (tally.get(l.name) ?? 0) + l.qty)));
+    const fav = [...tally].sort((a, b) => b[1] - a[1])[0];
+    $('[data-stat-orders]').textContent = String(list.length);
+    $('[data-stat-spent]').textContent = clp(spent);
+    $('[data-stat-fav]').textContent = fav ? fav[0] : 'Aún no hay';
+    const last = $('[data-last-body]');
+    if (list[0]) last.replaceChildren(orderCard(list[0], true));
+    else {
+      const p = el('p', 'body-6 text-ink/60', 'Cuando hagas tu primer pedido, aparecerá aquí con un botón para repetirlo.');
+      last.replaceChildren(p);
+    }
+  }
+
+  /* ---------- Checklist: what is left to complete the profile ---------- */
+  function renderChecklist(u: Profile) {
+    const items = [
+      { ok: !!u.name.trim().includes(' '), t: 'Nombre y apellido', href: '#datos' },
+      { ok: !!u.phone, t: 'Teléfono de contacto', href: '#datos' },
+      { ok: u.addresses.length > 0, t: 'Dirección de despacho', href: '#direcciones' },
+      { ok: u.billing.type === 'boleta' || isValidRut(u.billing.rut), t: 'Datos de facturación', href: '#facturacion' },
+    ];
+    const done = items.filter((i) => i.ok).length;
+    const list = $('[data-checklist]');
+    list.hidden = done === items.length;
+    const head = el('li', 'flex items-center justify-between');
+    head.append(el('p', 'title-3', 'Completa tu perfil'), el('p', 'caption-4 tabular-nums text-ink/60', `${done} de ${items.length}`));
+    list.replaceChildren(
+      head,
+      ...items.map((i) => {
+        const li = el('li');
+        const a = el('a', `body-6 flex items-center gap-2 ${i.ok ? 'text-ink/40 line-through' : 'hover:underline'}`) as HTMLAnchorElement;
+        a.href = i.href;
+        a.append(el('span', `grid size-5 place-items-center rounded-full text-xs ${i.ok ? 'bg-green text-cream' : 'ring-1 ring-ink/30'}`, i.ok ? '✓' : ''), document.createTextNode(i.t));
+        li.append(a);
+        return li;
+      }),
+    );
+  }
+
+  /* ---------- Addresses ---------- */
+  const aForm = $<HTMLFormElement>('[data-address-form]');
+  function openAddress(a?: Profile['addresses'][number]) {
+    aForm.hidden = false;
+    aForm.reset();
+    $('[data-address-form-title]').textContent = a ? 'Editar dirección' : 'Nueva dirección';
+    (aForm.elements.namedItem('id') as HTMLInputElement).value = a?.id ?? '';
+    if (a) for (const k of ['label', 'street', 'comuna', 'notes'] as const) (aForm.elements.namedItem(k) as HTMLInputElement).value = a[k];
+    (aForm.elements.namedItem('default') as HTMLInputElement).checked = !account.user?.addresses.length || account.user?.defaultAddress === a?.id;
+    ['street', 'comuna'].forEach((n) => setErr(aForm, n, ''));
+    aForm.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    (aForm.elements.namedItem(a ? 'street' : 'label') as HTMLInputElement).focus({ preventScroll: true });
+  }
+  $('[data-add-address]').addEventListener('click', () => openAddress());
+  $('[data-cancel-address]').addEventListener('click', () => (aForm.hidden = true));
+  aForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const d = new FormData(aForm);
+    const street = String(d.get('street')).trim();
+    const comuna = String(d.get('comuna')).trim();
+    const ok = [setErr(aForm, 'street', street.length >= 5 ? '' : 'Escribe calle y número.'), setErr(aForm, 'comuna', comuna.length >= 3 ? '' : 'Indica la comuna.')].every(Boolean);
+    if (!ok) return;
+    try {
+      await account.saveAddress(
+        { id: String(d.get('id')) || undefined, label: String(d.get('label')).trim() || 'Dirección', street, comuna, notes: String(d.get('notes')).trim() },
+        d.get('default') === 'on',
+      );
+      aForm.hidden = true;
+    } catch (err) {
+      setErr(aForm, 'street', err instanceof ApiError ? err.message : 'No se pudo guardar la dirección.');
+    }
+  });
+
+  function renderAddresses(u: Profile) {
+    $('[data-no-addresses]').hidden = u.addresses.length > 0;
+    const badge = $('[data-badge="direcciones"]');
+    badge.textContent = String(u.addresses.length);
+    badge.classList.toggle('hidden', !u.addresses.length);
+    $('[data-addresses]').replaceChildren(
+      ...u.addresses.map((a) => {
+        const isDefault = a.id === u.defaultAddress;
+        const li = el('li', `flex flex-col gap-2 rounded-3xl bg-white p-6 ring-1 ${isDefault ? 'ring-2 ring-ink' : 'ring-ink/5'}`);
+        const head = el('div', 'flex items-center justify-between gap-2');
+        head.append(el('p', 'title-2', a.label));
+        if (isDefault) head.append(el('span', 'caption-3 rounded-full bg-yellow px-2 py-1 !tracking-normal', 'Predeterminada'));
+        li.append(head, el('p', 'body-6', a.street), el('p', 'body-6 text-ink/60', a.comuna));
+        if (a.notes) li.append(el('p', 'caption-5 text-ink/50', a.notes));
+        const actions = el('div', 'mt-2 flex flex-wrap gap-2');
+        const mk = (text: string, fn: () => void) => {
+          const b = el('button', 'button-sm rounded-full bg-ink/5 px-3 py-1 hover:bg-ink/10', text) as HTMLButtonElement;
+          b.type = 'button';
+          b.addEventListener('click', fn);
+          actions.append(b);
+        };
+        mk('Editar', () => openAddress(a));
+        if (!isDefault) mk('Hacer predeterminada', () => account.saveAddress(a, true));
+        mk('Eliminar', () => account.removeAddress(a.id));
+        li.append(actions);
+        return li;
+      }),
+    );
+  }
+
+  /* ---------- Billing ---------- */
+  const bForm = $<HTMLFormElement>('[data-billing-form]');
+  const facturaFields = $('[data-factura-fields]');
+  const billingType = () => (bForm.elements.namedItem('type') as RadioNodeList).value as 'boleta' | 'factura';
+  bForm.addEventListener('change', () => (facturaFields.hidden = billingType() !== 'factura'));
+  const rutInput = $<HTMLInputElement>('#b-rut');
+  rutInput.addEventListener('blur', () => rutInput.value && (rutInput.value = formatRut(rutInput.value)));
+  bForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = new FormData(bForm);
+    const type = billingType();
+    const v = (k: string) => String(d.get(k) ?? '').trim();
+    if (type === 'factura') {
+      const ok = [
+        setErr(bForm, 'rut', isValidRut(v('rut')) ? '' : 'Ese RUT no es válido. Revisa el dígito verificador.'),
+        setErr(bForm, 'razon', v('razon').length >= 3 ? '' : 'Escribe la razón social.'),
+        setErr(bForm, 'giro', v('giro').length >= 3 ? '' : 'Escribe el giro.'),
+        setErr(bForm, 'direccion', v('direccion').length >= 5 ? '' : 'Escribe la dirección comercial.'),
+      ].every(Boolean);
+      if (!ok) return;
+    }
+    save(() => account.update({ billing: { type, rut: type === 'factura' ? formatRut(v('rut')) : '', razon: v('razon'), giro: v('giro'), direccion: v('direccion') } }), $('[data-billing-label]'), 'Facturación guardada', 'Guardar facturación');
+  });
+
+  /* ---------- Profile ---------- */
+  const profile = $<HTMLFormElement>('[data-profile]');
+  profile.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = new FormData(profile);
+    const phone = String(d.get('phone')).trim();
+    if (!setErr(profile, 'phone', !phone || /^(56)?9\d{8}$/.test(phone.replace(/\D/g, '')) ? '' : 'Usa un celular chileno, por ejemplo +56 9 1234 5678.')) return;
+    save(() => account.update({ name: String(d.get('name')).trim(), phone, promos: d.get('promos') === 'on' }), $('[data-save-label]'), 'Datos guardados', 'Guardar datos');
+  });
+
+  $$('[data-signout]').forEach((b) => b.addEventListener('click', () => account.signOut()));
+
+  // order statuses set in the admin panel arrive through account's own refresh (every 15 s)
+  // forms are filled once, so a background refresh never overwrites what someone is typing
+  let formsFilled = false;
+
+  /* ---------- Paint everything from the profile ---------- */
+  account.onChange((u) => {
+    if (!u) return;
+    const first = u.name.split(' ')[0] || u.email.split('@')[0];
+    $('[data-avatar]').textContent = (u.name || u.email).trim()[0].toUpperCase();
+    $('[data-side-name]').textContent = u.name || first;
+    $('[data-side-email]').textContent = u.email;
+    $('[data-hello]').textContent = first;
+    $('[data-member-since]').textContent = `Socio desde ${fmtDate(u.createdAt, { month: 'long', year: 'numeric' })}`;
+    $('[data-email]').textContent = u.email;
+
+    if (!formsFilled) {
+      formsFilled = true;
+      (profile.elements.namedItem('name') as HTMLInputElement).value = u.name;
+      (profile.elements.namedItem('phone') as HTMLInputElement).value = u.phone;
+      (profile.elements.namedItem('promos') as HTMLInputElement).checked = u.promos;
+      (bForm.querySelector(`[value="${u.billing.type}"]`) as HTMLInputElement).checked = true;
+      facturaFields.hidden = u.billing.type !== 'factura';
+      for (const k of ['rut', 'razon', 'giro', 'direccion'] as const) (bForm.elements.namedItem(k) as HTMLInputElement).value = u.billing[k];
+    }
+
+    renderOrders();
+    renderAddresses(u);
+    renderChecklist(u);
+  });
+</script>

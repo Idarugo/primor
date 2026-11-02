@@ -1,0 +1,32 @@
+---
+import { STORE_URL } from '../data/site';
+
+// Written out literally (not computed) so Tailwind sees the classes and no style="" is needed under the CSP.
+const rain = [
+  'left-[0%] top-[-20%]',
+  'left-[47%] top-[-51%]',
+  'left-[2%] top-[-42%]',
+  'left-[49%] top-[-33%]',
+  'left-[4%] top-[-24%]',
+  'left-[51%] top-[-55%]',
+  'left-[6%] top-[-46%]',
+  'left-[53%] top-[-37%]',
+  'left-[8%] top-[-28%]',
+  'left-[55%] top-[-59%]',
+];
+---
+
+<section data-finale aria-labelledby="finale-title" class="relative grid min-h-svh place-items-center overflow-hidden bg-yellow px-4 py-24 text-ink">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+    {rain.map((pos, i) => (
+      <svg data-rain={i} class:list={['absolute size-[12vmin]', pos]}>
+        <use href={`#chip-${(i % 3) + 1}`} />
+      </svg>
+    ))}
+  </div>
+  <div class="relative z-10 text-center">
+    <h2 id="finale-title" class="display mx-auto max-w-5xl">¿Picnic sin Primor?</h2>
+    <p class="body-3 mx-auto mt-6 max-w-md text-ink/70 sm:text-lg">Pide tus papas, ramitas y suflés favoritos en la tienda online.</p>
+    <a href={STORE_URL} class="btn btn-ink mt-8">Comprar en la tienda</a>
+  </div>
+</section>

@@ -1,0 +1,41 @@
+---
+import { address, MAPS_URL, STORE_URL, faqs } from '../data/site';
+---
+
+<section id="visitanos" aria-labelledby="visit-title" class="relative bg-ink py-24 sm:py-32">
+  <div class="mx-auto grid max-w-7xl gap-8 px-4 sm:px-8 lg:grid-cols-2 lg:gap-16">
+    <div data-reveal class="relative overflow-hidden rounded-3xl bg-yellow p-8 text-ink sm:p-12">
+      <p class="caption-3 text-ink/70">Sala de venta</p>
+      <h2 id="visit-title" class="heading-3 mt-4 sm:heading-2">{address.street}<br />{address.city}</h2>
+      <dl class="mt-8 grid gap-4">
+        <div>
+          <dt class="title-4 text-ink/60">Horario</dt>
+          <dd class="body-1 mt-1">{address.hours}</dd>
+        </div>
+      </dl>
+      <div class="relative z-10 mt-8 flex flex-wrap gap-4">
+        <a href={MAPS_URL} target="_blank" rel="noopener" class="btn btn-ink">Ver ubicación</a>
+        <a href={STORE_URL} class="btn bg-ink/10 text-ink">Comprar en línea</a>
+      </div>
+      <img src="/img/caja-mix.webp" alt="Caja surtida Primor" loading="lazy" data-visit-box class="pointer-events-none relative z-0 mt-8 ml-auto w-56 drop-shadow-[0_30px_40px_rgba(0,0,0,0.3)] sm:w-72 lg:absolute lg:right-8 lg:bottom-8 lg:mt-0 lg:w-64" />
+    </div>
+
+    <div data-reveal>
+      <h2 class="heading-4 sm:heading-3">Preguntas frecuentes</h2>
+      <div class="mt-8 divide-y divide-cream/10 rounded-3xl bg-ink-2 px-6 ring-1 ring-cream/10">
+        {faqs.map((f) => (
+          <details class="group py-6">
+            <summary class="title-2 flex cursor-pointer list-none items-center justify-between gap-4 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-yellow [&::-webkit-details-marker]:hidden">
+              {f.q}
+              <span aria-hidden="true" class="relative grid size-8 shrink-0 place-items-center rounded-full bg-cream/10">
+                <span class="absolute h-0.5 w-3 rounded bg-cream"></span>
+                <span class="absolute h-0.5 w-3 rotate-90 rounded bg-cream transition-transform duration-500 ease-out-soft group-open:rotate-0"></span>
+              </span>
+            </summary>
+            <p class="body-3 mt-4 max-w-prose text-cream/70">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

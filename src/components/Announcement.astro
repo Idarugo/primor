@@ -1,0 +1,54 @@
+---
+// Site wide strip the owner turns on from /admin → Contenido. Stays hidden until a script reads it.
+---
+
+<div data-announcement hidden class="fixed inset-x-0 top-0 z-[60] bg-red text-cream">
+  <p class="body-5 mx-auto flex max-w-7xl items-center justify-center gap-2 px-10 py-2 text-center">
+    <a data-an-link class="underline-offset-4 hover:underline"><span data-an-text></span></a>
+  </p>
+  <button type="button" data-an-close aria-label="Cerrar aviso" class="absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center rounded-full hover:bg-cream/15">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="size-4"><path d="M6 6l12 12M18 6 6 18" /></svg>
+  </button>
+</div>
+
+<script>
+  import { onAdminChange, announcement } from '../lib/overrides';
+  import { safeHref } from '../lib/security';
+
+  const bar = document.querySelector<HTMLElement>('[data-announcement]')!;
+  const link = bar.querySelector<HTMLAnchorElement>('[data-an-link]')!;
+  const closedKey = (text: string) => `primor.announcement.closed:${text}`;
+  const setOffset = () => document.documentElement.style.setProperty('--bar-h', bar.hidden ? '0px' : `${bar.offsetHeight}px`);
+
+  function render() {
+    const a = announcement();
+    let closed = false;
+    try {
+      closed = sessionStorage.getItem(closedKey(a.text)) === '1';
+    } catch {
+      closed = false;
+    }
+    const show = !!a?.active && !!a.text && !closed;
+    bar.hidden = !show;
+    if (show && a) {
+      bar.querySelector('[data-an-text]')!.textContent = a.text;
+      const href = safeHref(a.href);
+      if (href) link.href = href;
+      else link.removeAttribute('href');
+    }
+    setOffset();
+  }
+
+  bar.querySelector('[data-an-close]')!.addEventListener('click', () => {
+    try {
+      sessionStorage.setItem(closedKey(bar.querySelector('[data-an-text]')!.textContent ?? ''), '1');
+    } catch {
+      /* ignore */
+    }
+    bar.hidden = true;
+    setOffset();
+  });
+  addEventListener('resize', setOffset);
+  render();
+  onAdminChange(render);
+</script>

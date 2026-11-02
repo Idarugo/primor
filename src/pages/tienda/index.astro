@@ -1,0 +1,150 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProductCard from '../../components/shop/ProductCard.astro';
+import { products, families, discount } from '../../data/catalog';
+import { address } from '../../data/site';
+
+const maxOff = Math.max(...products.map(discount));
+const counts = Object.fromEntries(families.map((f) => [f.id, f.id === 'todo' ? products.length : products.filter((p) => p.family === f.id).length]));
+---
+
+<Layout
+  title="Tienda online · Primor"
+  description="Compra papas fritas, papas hilo, ramitas, suflés, maní y cajas surtidas Primor. Retiro en Rancagua o despacho."
+  theme="light"
+>
+  <section class="bg-ink px-4 pt-32 pb-16 text-cream sm:px-8 sm:pt-40">
+    <div class="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-end md:justify-between">
+      <div>
+        <p class="caption-3 text-yellow">Tienda online</p>
+        <h1 class="heading-2 mt-4 max-w-[680px] sm:heading-1">Directo de Rancagua<br />a tu mesa</h1>
+        <p class="body-3 mt-4 max-w-md text-cream/70">Elige tus formatos, retíralos gratis en {address.street} o pide despacho a domicilio.</p>
+        <a href="/arma-tu-caja" class="btn btn-primary mt-6">Arma tu propia caja</a>
+      </div>
+      <ul class="grid grid-cols-3 gap-2 text-center sm:gap-4">
+        <li class="rounded-2xl bg-cream/5 px-4 py-3"><p data-total-count class="heading-5 text-yellow">{products.length}</p><p class="caption-5 text-cream/60">productos</p></li>
+        <li class="rounded-2xl bg-cream/5 px-4 py-3"><p class="heading-5 text-yellow">−{maxOff}%</p><p class="caption-5 text-cream/60">en cajas promo</p></li>
+        <li class="rounded-2xl bg-cream/5 px-4 py-3"><p class="heading-5 text-yellow">$0</p><p class="caption-5 text-cream/60">retiro en sala</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="sticky top-0 z-30 bg-cream/90 pt-24 pb-4 backdrop-blur-xl sm:pt-20">
+    <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
+      <div role="tablist" aria-label="Categorías" class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0">
+        {families.map((f, i) => (
+          <button
+            type="button"
+            role="tab"
+            data-filter={f.id}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            class="button-sm shrink-0 rounded-full px-4 py-2 whitespace-nowrap ring-1 ring-ink/10 transition-colors duration-300 ease-out-soft hover:bg-ink/5 aria-selected:bg-ink aria-selected:text-cream aria-selected:ring-ink focus-visible:outline-2 focus-visible:outline-red"
+          >
+            {f.label} <span data-tab-count class="opacity-50">{counts[f.id]}</span>
+          </button>
+        ))}
+      </div>
+      <div class="flex gap-2">
+        <label class="relative flex-1 lg:w-64 lg:flex-none">
+          <span class="sr-only">Buscar productos</span>
+          <svg aria-hidden="true" viewBox="0 0 256 256" class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink/40" fill="currentColor"><path d="m229.66 218.34-50.07-50.06a88.11 88.11 0 1 0-11.31 11.31l50.06 50.07a8 8 0 0 0 11.32-11.32ZM40 112a72 72 0 1 1 72 72 72.08 72.08 0 0 1-72-72Z" /></svg>
+          <input data-search type="search" placeholder="Buscar: queso, hilo, maní…" class="body-6 w-full rounded-full bg-white py-2 pr-4 pl-9 ring-1 ring-ink/10 focus:ring-2 focus:ring-red focus:outline-none" />
+        </label>
+        <label>
+          <span class="sr-only">Ordenar</span>
+          <select data-sort class="body-5 h-full rounded-full bg-white px-4 py-2 ring-1 ring-ink/10 focus:ring-2 focus:ring-red focus:outline-none">
+            <option value="featured">Destacados</option>
+            <option value="asc">Menor precio</option>
+            <option value="desc">Mayor precio</option>
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <section aria-label="Productos" class="mx-auto max-w-7xl px-4 pb-24 sm:px-8">
+    <p data-results class="caption-5 py-4 text-ink/50" aria-live="polite">{products.length} productos</p>
+    <ul data-grid class="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+      {products.map((p, i) => <ProductCard product={p} index={i} />)}
+    </ul>
+    <div data-no-results class="hidden flex-col items-center gap-4 py-24 text-center">
+      <svg aria-hidden="true" class="size-20 rotate-12"><use href="#chip-2" /></svg>
+      <p class="title-1">No encontramos ese snack</p>
+      <p class="body-6 text-ink/60">Prueba con otra palabra o revisa todas las categorías.</p>
+      <button type="button" data-reset class="btn btn-ink">Ver todo</button>
+    </div>
+  </section>
+
+  <section class="bg-yellow px-4 py-16 sm:px-8">
+    <div class="mx-auto grid max-w-7xl gap-8 md:grid-cols-3">
+      <div><p class="title-2">Retiro sin costo</p><p class="body-6 mt-2 text-ink/70">En {address.street}, {address.city}. {address.hours}.</p></div>
+      <div><p class="title-2">Despacho a domicilio</p><p class="body-6 mt-2 text-ink/70">El costo depende de tu comuna y se confirma antes de pagar.</p></div>
+      <div><p class="title-2">Para tu negocio</p><p class="body-6 mt-2 text-ink/70">Cajas de 10 y 20 unidades para almacenes, botillerías y eventos.</p><a href="/contacto?tipo=negocio" class="body-4 mt-2 inline-block underline underline-offset-4">Escríbenos</a></div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { applyProductOverrides, onAdminChange } from '../../lib/overrides';
+  const grid = document.querySelector<HTMLElement>('[data-grid]')!;
+  const allCards = [...grid.querySelectorAll<HTMLElement>('[data-card]')];
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  // products the admin hid never take part in filtering or counts
+  let cards: HTMLElement[] = [];
+  function syncAdmin() {
+    applyProductOverrides();
+    cards = allCards.filter((c) => !c.hasAttribute('data-admin-hidden'));
+    allCards.forEach((c) => c.hasAttribute('data-admin-hidden') && (c.hidden = true));
+    document.querySelector('[data-total-count]')!.textContent = String(cards.length);
+    tabs.forEach((t) => {
+      const f = t.dataset.filter;
+      t.querySelector('[data-tab-count]')!.textContent = String(f === 'todo' ? cards.length : cards.filter((c) => c.dataset.family === f).length);
+    });
+  }
+  syncAdmin();
+  const search = document.querySelector<HTMLInputElement>('[data-search]')!;
+  const sort = document.querySelector<HTMLSelectElement>('[data-sort]')!;
+  const results = document.querySelector<HTMLElement>('[data-results]')!;
+  const none = document.querySelector<HTMLElement>('[data-no-results]')!;
+
+  const params = new URLSearchParams(location.search);
+  let family = params.get('c') ?? 'todo';
+  if (!tabs.some((t) => t.dataset.filter === family)) family = 'todo';
+  search.value = params.get('q') ?? '';
+  sort.value = params.get('orden') ?? 'featured';
+
+  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+  function render() {
+    const q = norm(search.value.trim());
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.filter === family)));
+    const visible = cards.filter((c) => (family === 'todo' || c.dataset.family === family) && (!q || norm(c.dataset.search!).includes(q)));
+    const by = { featured: (c: HTMLElement) => Number(c.dataset.order), asc: (c: HTMLElement) => Number(c.dataset.price), desc: (c: HTMLElement) => -Number(c.dataset.price) }[sort.value as 'featured'];
+    visible.sort((a, b) => by(a) - by(b));
+    cards.forEach((c) => (c.hidden = !visible.includes(c)));
+    grid.append(...visible);
+    results.textContent = `${visible.length} ${visible.length === 1 ? 'producto' : 'productos'}`;
+    none.classList.toggle('hidden', visible.length > 0);
+    none.classList.toggle('flex', visible.length === 0);
+
+    const next = new URLSearchParams();
+    if (family !== 'todo') next.set('c', family);
+    if (q) next.set('q', search.value.trim());
+    if (sort.value !== 'featured') next.set('orden', sort.value);
+    history.replaceState(null, '', next.size ? `?${next}` : location.pathname);
+  }
+
+  tabs.forEach((t) => t.addEventListener('click', () => ((family = t.dataset.filter!), render())));
+  search.addEventListener('input', render);
+  sort.addEventListener('change', render);
+  document.querySelector('[data-reset]')!.addEventListener('click', () => {
+    family = 'todo';
+    search.value = '';
+    render();
+  });
+  render();
+  onAdminChange(() => {
+    syncAdmin();
+    render();
+  });
+</script>

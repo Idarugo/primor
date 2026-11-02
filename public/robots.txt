@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin
+Disallow: /cuenta
+Disallow: /tienda/checkout
+Disallow: /tienda/pedido

@@ -1,0 +1,88 @@
+---
+const links = [
+  { href: '/#historia', label: 'Historia' },
+  { href: '/#productos', label: 'Productos' },
+  { href: '/#comunidad', label: 'Comunidad' },
+  { href: '/#visitanos', label: 'Visítanos' },
+];
+const inStore = Astro.url.pathname.startsWith('/tienda');
+// Stagger for the mobile menu links, as literal classes so no inline style is needed (CSP).
+const delays = ['delay-0', 'delay-[60ms]', 'delay-[120ms]', 'delay-[180ms]', 'delay-[240ms]', 'delay-[300ms]', 'delay-[360ms]', 'delay-[400ms]'];
+const mobileLinks = [...links, { href: '/arma-tu-caja', label: 'Arma tu caja' }, { href: '/cuenta', label: 'Mi cuenta' }, { href: '/contacto', label: 'Contacto' }];
+---
+
+<header class="pointer-events-none fixed inset-x-0 top-[calc(1rem+var(--bar-h,0px))] z-50 flex justify-center px-4 transition-[top] duration-300 ease-out-soft">
+  <nav
+    aria-label="Principal"
+    class="pointer-events-auto flex items-center gap-2 rounded-full bg-ink/60 p-2 ring-1 ring-cream/10 backdrop-blur-xl"
+  >
+    <a href="/" class="flex items-center rounded-full bg-cream px-3 py-2 focus-visible:outline-2 focus-visible:outline-yellow" aria-label="Primor, ir al inicio">
+      <img src="/img/logo.webp" alt="Primor" width="72" height="33" class="h-6 w-auto" />
+    </a>
+    <ul class="hidden items-center md:flex">
+      {links.map((l) => (
+        <li>
+          <a href={l.href} data-nav-link class="title-4 rounded-full px-3 py-2 text-cream/70 transition-colors duration-300 ease-out-soft hover:text-cream aria-[current=true]:bg-cream/10 aria-[current=true]:text-cream">
+            {l.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a href="/tienda" aria-current={inStore ? 'page' : undefined} class="btn btn-primary button-sm !py-2">Tienda</a>
+    <a
+      href="/cuenta"
+      aria-label="Mi cuenta"
+      class="hidden size-10 place-items-center rounded-full bg-cream/10 text-cream transition-transform duration-500 ease-out-soft hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-yellow sm:grid"
+    >
+      <svg aria-hidden="true" viewBox="0 0 256 256" class="size-5" fill="currentColor"><path d="M230.92 212c-15.23-26.33-38.7-45.21-66.09-54.16a72 72 0 1 0-73.66 0c-27.39 8.94-50.86 27.82-66.09 54.16a8 8 0 1 0 13.85 8c18.84-32.56 52.14-52 89.07-52s70.23 19.44 89.07 52a8 8 0 1 0 13.85-8ZM72 96a56 56 0 1 1 56 56 56.06 56.06 0 0 1-56-56Z" /></svg>
+    </a>
+    <button
+      type="button"
+      data-cart-open
+      aria-label="Abrir carrito"
+      class="relative grid size-10 place-items-center rounded-full bg-cream/10 text-cream transition-transform duration-500 ease-out-soft hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-yellow"
+    >
+      <svg aria-hidden="true" viewBox="0 0 256 256" class="size-5" fill="currentColor"><path d="M216 64h-40a48 48 0 0 0-96 0H40a16 16 0 0 0-16 16v120a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16Zm-88-32a32 32 0 0 1 32 32H96a32 32 0 0 1 32-32Zm88 168H40V80h40v16a8 8 0 0 0 16 0V80h64v16a8 8 0 0 0 16 0V80h40Z" /></svg>
+      <span data-cart-count class="caption-3 absolute -top-1 -right-1 hidden min-w-5 rounded-full bg-red px-1 py-0.5 text-center !tracking-normal text-cream">0</span>
+    </button>
+    <button
+      id="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Abrir menú"
+      class="group relative grid size-10 place-items-center rounded-full bg-cream/10 md:hidden"
+    >
+      <span class="absolute h-0.5 w-4 -translate-y-1 rounded bg-cream transition-transform duration-500 ease-out-soft group-aria-expanded:translate-y-0 group-aria-expanded:rotate-45"></span>
+      <span class="absolute h-0.5 w-4 translate-y-1 rounded bg-cream transition-transform duration-500 ease-out-soft group-aria-expanded:translate-y-0 group-aria-expanded:-rotate-45"></span>
+    </button>
+  </nav>
+</header>
+
+<div
+  id="mobile-menu"
+  class="invisible fixed inset-0 z-40 flex flex-col justify-center gap-2 bg-ink/90 px-6 opacity-0 backdrop-blur-2xl transition-opacity duration-500 ease-out-soft data-[open]:visible data-[open]:opacity-100 md:hidden"
+>
+  {mobileLinks.map((l, i) => (
+    <a href={l.href} class:list={['mobile-link heading-2 translate-y-6 py-2 opacity-0 transition duration-500 ease-out-soft', delays[Math.min(i, delays.length - 1)]]}>
+      {l.label}
+    </a>
+  ))}
+</div>
+
+<script>
+  const toggle = document.getElementById('menu-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+  const setOpen = (open: boolean) => {
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    menu.toggleAttribute('data-open', open);
+    menu.querySelectorAll<HTMLElement>('.mobile-link').forEach((a) => {
+      a.classList.toggle('opacity-0', !open);
+      a.classList.toggle('translate-y-6', !open);
+    });
+  };
+  toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+</script>

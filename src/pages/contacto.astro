@@ -1,0 +1,304 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { address, MAPS_URL, INSTAGRAM_URL, FACEBOOK_URL, WHATSAPP, PHONE } from '../data/site';
+
+const field = 'body-6 w-full rounded-lg bg-cream/40 px-4 py-3 ring-1 ring-ink/15 transition-shadow duration-300 ease-out-soft placeholder:text-ink/35 hover:ring-ink/30 focus:bg-white focus:ring-2 focus:ring-ink focus:outline-none aria-invalid:ring-2 aria-invalid:ring-red';
+const label = 'caption-4 mb-2 block text-ink/70';
+
+// Same four inquiry types as the current primor.cl form, so messages keep landing in the same buckets.
+const topics = [
+  { id: 'personal', t: 'Consumo personal' },
+  { id: 'negocio', t: 'Venta a mi negocio' },
+  { id: 'foodservice', t: 'Restaurante o FoodService' },
+  { id: 'comuna', t: 'No encuentro mi comuna' },
+];
+const MAX = 800;
+const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(`${address.street}, ${address.city}, Chile`)}&z=16&output=embed`;
+---
+
+<Layout title="Contacto · Primor" description={`Escríbenos o visita la sala de venta de Primor en ${address.street}, ${address.city}.`} theme="light">
+  <section class="mx-auto max-w-7xl px-4 pt-32 sm:px-8 sm:pt-40">
+    <nav aria-label="Ruta" class="caption-4 text-ink/50"><a href="/" class="hover:text-ink">Inicio</a> / <span aria-current="page" class="text-ink">Contacto</span></nav>
+    <div class="mt-6 grid gap-6 border-b border-ink/10 pb-12 lg:grid-cols-2 lg:items-end">
+      <h1 class="heading-2 sm:heading-1">Contacto</h1>
+      <p class="body-3 max-w-md text-ink/70 lg:justify-self-end">Atendemos consultas de clientes, ventas a negocios y despachos. Escríbenos y te respondemos por correo.</p>
+    </div>
+  </section>
+
+  <section class="mx-auto grid max-w-7xl gap-12 px-4 py-12 sm:px-8 sm:py-16 lg:grid-cols-[5fr_7fr] lg:gap-16">
+    <!-- Information -->
+    <div class="lg:sticky lg:top-24 lg:self-start">
+      <dl class="divide-y divide-ink/10 border-y border-ink/10">
+        <div class="grid gap-2 py-6 sm:grid-cols-[140px_1fr]">
+          <dt class="caption-3 text-ink/50">Sala de venta</dt>
+          <dd>
+            <address class="title-3 not-italic">{address.street}<br />{address.city}, Región de O’Higgins</address>
+            <a href={MAPS_URL} target="_blank" rel="noopener" class="button-sm mt-2 inline-block text-red underline-offset-4 hover:underline">Cómo llegar →</a>
+          </dd>
+        </div>
+        <div class="grid gap-2 py-6 sm:grid-cols-[140px_1fr]">
+          <dt class="caption-3 text-ink/50">Horario</dt>
+          <dd>
+            <p class="title-3">{address.hours}</p>
+            <p data-open-badge data-schedule={JSON.stringify(address.schedule)} class="caption-4 mt-2 inline-flex items-center gap-2 text-ink/60">
+              <span data-open-dot class="size-2 rounded-full bg-ink/30"></span>
+              <span data-open-text></span>
+            </p>
+          </dd>
+        </div>
+        <div class="grid gap-2 py-6 sm:grid-cols-[140px_1fr]">
+          <dt class="caption-3 text-ink/50">Negocios</dt>
+          <dd>
+            <p class="body-6 text-ink/70">Almacenes, botillerías, restaurantes y distribuidores.</p>
+            <a href="?tipo=negocio#formulario" data-pick="negocio" class="button-sm mt-2 inline-block text-red underline-offset-4 hover:underline">Solicitar condiciones →</a>
+          </dd>
+        </div>
+        {WHATSAPP && (
+          <div class="grid gap-2 py-6 sm:grid-cols-[140px_1fr]">
+            <dt class="caption-3 text-ink/50">WhatsApp</dt>
+            <dd><a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noopener" class="title-3 hover:underline">{PHONE}</a></dd>
+          </div>
+        )}
+        <div class="grid gap-2 py-6 sm:grid-cols-[140px_1fr]">
+          <dt class="caption-3 text-ink/50">Redes</dt>
+          <dd class="flex flex-wrap gap-x-6 gap-y-1">
+            <a href={INSTAGRAM_URL} target="_blank" rel="noopener" class="title-3 hover:underline">Instagram</a>
+            <a href={FACEBOOK_URL} target="_blank" rel="noopener" class="title-3 hover:underline">Facebook</a>
+          </dd>
+        </div>
+      </dl>
+
+      <div class="mt-8 overflow-hidden rounded-2xl bg-ink/5 ring-1 ring-ink/10">
+        <iframe
+          title={`Mapa de la sala de venta Primor en ${address.street}, ${address.city}`}
+          src={mapSrc}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          class="aspect-[4/3] w-full grayscale-[60%] transition duration-500 ease-out-soft hover:grayscale-0"
+        ></iframe>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div id="formulario" class="scroll-mt-28">
+      <form data-contact novalidate class="rounded-3xl bg-white p-6 ring-1 ring-ink/10 sm:p-10">
+        <h2 class="heading-5">Envíanos un mensaje</h2>
+        <p class="body-6 mt-1 text-ink/60">Todos los campos son obligatorios salvo que diga lo contrario.</p>
+
+        <fieldset class="mt-8">
+          <legend class={label}>Motivo de la consulta</legend>
+          <div class="flex flex-wrap gap-2">
+            {topics.map((t, i) => (
+              <label class="button-sm cursor-pointer rounded-full px-4 py-2 ring-1 ring-ink/15 transition-colors duration-300 ease-out-soft hover:ring-ink/40 has-checked:bg-ink has-checked:text-cream has-checked:ring-ink has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-red">
+                <input type="radio" name="topic" value={t.id} checked={i === 0} class="sr-only" />
+                {t.t}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <div class="mt-8 grid gap-6 sm:grid-cols-2">
+          <div>
+            <label for="c-name" class={label}>Nombre y apellido</label>
+            <input id="c-name" name="name" autocomplete="name" class={field} />
+            <p data-err="name" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+          <div>
+            <label for="c-email" class={label}>Correo electrónico</label>
+            <input id="c-email" name="email" type="email" autocomplete="email" class={field} />
+            <p data-err="email" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+          <div>
+            <label for="c-phone" class={label}>Celular (opcional)</label>
+            <input id="c-phone" name="phone" type="tel" autocomplete="tel" class={field} placeholder="+56 9" />
+            <p data-err="phone" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+          <div data-when="comuna negocio foodservice">
+            <label for="c-comuna" class={label}>Comuna</label>
+            <input id="c-comuna" name="comuna" autocomplete="address-level2" class={field} />
+            <p data-err="comuna" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+
+          <div data-when="negocio foodservice" class="grid gap-6 sm:col-span-2 sm:grid-cols-2">
+            <div>
+              <label for="c-business" class={label}>Nombre del negocio</label>
+              <input id="c-business" name="business" autocomplete="organization" class={field} />
+              <p data-err="business" class="caption-5 mt-1 hidden text-red"></p>
+            </div>
+            <div>
+              <label for="c-volume" class={label}>Volumen mensual estimado (opcional)</label>
+              <select id="c-volume" name="volume" class={field}>
+                <option value="">Seleccionar</option>
+                <option>Menos de 5 cajas</option>
+                <option>Entre 5 y 20 cajas</option>
+                <option>Más de 20 cajas</option>
+                <option>Todavía no lo sé</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <div class="flex items-baseline justify-between">
+              <label for="c-message" class={label}>Mensaje</label>
+              <span data-count class="caption-5 tabular-nums text-ink/40">0 / {MAX}</span>
+            </div>
+            <textarea id="c-message" name="message" rows="6" maxlength={MAX} class:list={[field, 'resize-y']}></textarea>
+            <p data-err="message" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+
+          <!-- honeypot: real people never see or fill this -->
+          <div aria-hidden="true" class="absolute -left-[9999px]">
+            <label>No llenar <input name="website" tabindex="-1" autocomplete="off" /></label>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-col-reverse gap-4 border-t border-ink/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p class="caption-5 max-w-xs text-ink/50">Usamos tus datos solo para responder tu consulta. Lee nuestra <a href="/privacidad" class="underline">política de privacidad</a>.</p>
+          <button type="submit" data-submit class="btn btn-ink justify-center"><span data-submit-label>Enviar mensaje</span></button>
+        </div>
+        <p data-form-error role="alert" class="caption-5 mt-4 hidden text-red"></p>
+      </form>
+
+      <div data-sent hidden tabindex="-1" class="rounded-3xl bg-white p-6 ring-1 ring-ink/10 outline-none sm:p-10">
+        <span aria-hidden="true" class="grid size-12 place-items-center rounded-full bg-green/15 text-green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-6"><path d="M5 12.5 10 17 19 7" /></svg>
+        </span>
+        <h2 class="heading-5 mt-6">Mensaje enviado</h2>
+        <p class="body-3 mt-2 text-ink/70">Gracias, <span data-sent-name></span>. <span data-sent-next></span></p>
+        <dl class="mt-6 grid gap-2 rounded-xl bg-ink/5 p-4">
+          <div class="flex justify-between gap-4"><dt class="caption-4 text-ink/60">Número de consulta</dt><dd data-ticket class="body-4 tabular-nums"></dd></div>
+        </dl>
+        <p class="caption-5 mt-4 text-ink/50">Guarda el número de consulta por si necesitas hacer seguimiento.</p>
+        <div class="mt-8 flex flex-wrap gap-2">
+          <button type="button" data-again class="btn btn-ink">Enviar otra consulta</button>
+          <a href="/tienda" class="btn bg-ink/5 text-ink">Ir a la tienda</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { account } from '../lib/account';
+  import { isEmail } from '../lib/security';
+  import { api, ApiError } from '../lib/api';
+
+  // Bot traps: real people take more than a couple of seconds to fill a form.
+  const openedAt = Date.now();
+
+  const $ = <T extends HTMLElement = HTMLElement>(s: string, r: ParentNode = document) => r.querySelector<T>(s)!;
+  const form = $<HTMLFormElement>('[data-contact]');
+  const sent = $('[data-sent]');
+  const topic = () => (form.elements.namedItem('topic') as RadioNodeList).value;
+  const val = (n: string) => String((form.elements.namedItem(n) as HTMLInputElement).value ?? '').trim();
+
+  /* ---------- "Abierto ahora", computed in Chile time ---------- */
+  const s: { days: number[]; open: number; close: number } = JSON.parse($('[data-open-badge]').dataset.schedule!);
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Santiago', weekday: 'short', hour: 'numeric', hourCycle: 'h23' }).formatToParts(new Date()).map((p) => [p.type, p.value]));
+  const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(parts.weekday);
+  const hour = Number(parts.hour);
+  const open = s.days.includes(day) && hour >= s.open && hour < s.close;
+  $('[data-open-dot]').className = `size-2 rounded-full ${open ? 'bg-green' : 'bg-red'}`;
+  $('[data-open-text]').textContent = open ? `Abierto ahora · cierra a las ${s.close}:00` : `Cerrado · abre ${s.days.includes(day) && hour < s.open ? 'hoy' : day === 6 ? 'el lunes' : 'mañana'} a las ${s.open}:00`;
+
+  /* ---------- Topic driven fields (and ?tipo=negocio from other pages) ---------- */
+  const preset = new URLSearchParams(location.search).get('tipo');
+  if (preset) (form.querySelector(`[name=topic][value="${preset}"]`) as HTMLInputElement | null)?.click();
+  function showTopicFields() {
+    form.querySelectorAll<HTMLElement>('[data-when]').forEach((el) => (el.hidden = !el.dataset.when!.split(' ').includes(topic())));
+    $<HTMLTextAreaElement>('#c-message').placeholder =
+      { personal: 'Cuéntanos en qué te ayudamos', negocio: 'Qué productos te interesan y dónde está tu negocio', foodservice: 'Qué formatos necesitas y para cuántas personas', comuna: '¿Despachan a mi comuna? Vivo en…' }[topic()] ?? '';
+  }
+  form.addEventListener('change', (e) => (e.target as HTMLInputElement).name === 'topic' && showTopicFields());
+  document.querySelectorAll<HTMLAnchorElement>('[data-pick]').forEach((a) =>
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      (form.querySelector(`[name=topic][value="${a.dataset.pick}"]`) as HTMLInputElement).click();
+      document.getElementById('formulario')!.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => (form.elements.namedItem('name') as HTMLInputElement).focus({ preventScroll: true }), 400);
+    }),
+  );
+  showTopicFields();
+
+  /* ---------- Prefill for signed in customers ---------- */
+  await account.load();
+  const u = account.user;
+  if (u) {
+    (form.elements.namedItem('name') as HTMLInputElement).value = u.name;
+    (form.elements.namedItem('email') as HTMLInputElement).value = u.email;
+    (form.elements.namedItem('phone') as HTMLInputElement).value = u.phone;
+    if (u.billing.type === 'factura') (form.elements.namedItem('business') as HTMLInputElement).value = u.billing.razon;
+  }
+
+  const message = $<HTMLTextAreaElement>('#c-message');
+  message.addEventListener('input', () => ($('[data-count]').textContent = `${message.value.length} / ${message.maxLength}`));
+
+  /* ---------- Validation ---------- */
+  const rules: Record<string, () => string> = {
+    name: () => (val('name').length >= 2 ? '' : 'Escribe tu nombre.'),
+    email: () => (isEmail(val('email')) ? '' : 'Revisa el correo, falta algo como nombre@correo.cl.'),
+    phone: () => (!val('phone') || /^(56)?9\d{8}$/.test(val('phone').replace(/\D/g, '')) ? '' : 'Usa un celular chileno, por ejemplo +56 9 1234 5678.'),
+    comuna: () => (!['comuna', 'negocio', 'foodservice'].includes(topic()) || val('comuna').length >= 3 ? '' : 'Indica la comuna.'),
+    business: () => (!['negocio', 'foodservice'].includes(topic()) || val('business').length >= 2 ? '' : 'Escribe el nombre del negocio.'),
+    message: () => (val('message').length >= 10 ? '' : 'Cuéntanos un poco más, al menos 10 caracteres.'),
+  };
+  function check(n: string) {
+    const msg = rules[n]();
+    const out = $(`[data-err="${n}"]`, form);
+    out.textContent = msg;
+    out.classList.toggle('hidden', !msg);
+    const input = form.elements.namedItem(n) as HTMLInputElement;
+    input.setAttribute('aria-invalid', String(!!msg));
+    return !msg;
+  }
+  Object.keys(rules).forEach((n) => (form.elements.namedItem(n) as HTMLInputElement).addEventListener('blur', () => val(n) && check(n)));
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (val('website') || Date.now() - openedAt < 2500) return; // honeypot or too fast: a bot
+    const bad = Object.keys(rules).filter((n) => !check(n));
+    const err = $('[data-form-error]', form);
+    err.textContent = bad.length ? `Revisa ${bad.length === 1 ? 'un campo' : `${bad.length} campos`} antes de enviar.` : '';
+    err.classList.toggle('hidden', !bad.length);
+    if (bad.length) return (form.elements.namedItem(bad[0]) as HTMLInputElement).focus();
+
+    const btn = $<HTMLButtonElement>('[data-submit]', form);
+    btn.disabled = true;
+    $('[data-submit-label]', form).textContent = 'Enviando…';
+    let ticket = '';
+    try {
+      // the server validates again, rate limits by IP and email, and stores the message
+      ({ ticket } = await api<{ ticket: string }>('contact', {
+        body: { topic: topic(), name: val('name'), email: val('email'), phone: val('phone'), comuna: val('comuna'), business: val('business'), volume: val('volume'), message: val('message'), website: val('website') },
+      }));
+    } catch (ex) {
+      err.textContent = ex instanceof ApiError ? ex.message : 'No pudimos enviar el mensaje. Intenta de nuevo.';
+      err.classList.remove('hidden');
+      btn.disabled = false;
+      $('[data-submit-label]', form).textContent = 'Enviar mensaje';
+      return;
+    }
+    $('[data-ticket]').textContent = ticket;
+    $('[data-sent-name]').textContent = val('name').split(' ')[0];
+    $('[data-sent-next]').textContent =
+      topic() === 'negocio' || topic() === 'foodservice'
+        ? `Te enviaremos a ${val('email')} los formatos y condiciones para ${val('business')}.`
+        : topic() === 'comuna'
+          ? `Revisaremos si despachamos a ${val('comuna')} y te responderemos a ${val('email')}.`
+          : `Te responderemos a ${val('email')}.`;
+    form.hidden = true;
+    sent.hidden = false;
+    sent.focus();
+    document.getElementById('formulario')!.scrollIntoView({ block: 'start' });
+    btn.disabled = false;
+    $('[data-submit-label]', form).textContent = 'Enviar mensaje';
+  });
+
+  $('[data-again]').addEventListener('click', () => {
+    (form.elements.namedItem('message') as HTMLTextAreaElement).value = '';
+    $('[data-count]').textContent = `0 / ${message.maxLength}`;
+    sent.hidden = true;
+    form.hidden = false;
+    message.focus();
+  });
+</script>

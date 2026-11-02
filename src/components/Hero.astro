@@ -1,0 +1,82 @@
+---
+import { FOLLOWERS, STORE_URL } from '../data/site';
+
+// Deterministic chip burst: final positions in vw/vh relative to the bag.
+const chips = Array.from({ length: 16 }, (_, i) => {
+  const angle = (i / 16) * Math.PI * 2 + (i % 2 ? 0.3 : -0.2);
+  const dist = 26 + ((i * 37) % 18);
+  return {
+    x: Math.cos(angle) * dist,
+    y: Math.sin(angle) * dist * 0.75,
+    r: (i * 53) % 360,
+    s: 0.6 + ((i * 29) % 10) / 10,
+    v: (i % 3) + 1,
+    z: i % 5 === 0 ? 'z-30' : 'z-10',
+    sy: 0.55 + ((i * 17) % 4) / 10,
+  };
+});
+---
+
+<section id="top" data-hero class="relative h-svh overflow-hidden bg-ink grain">
+  <!-- Yellow flood that grows out of the bag -->
+  <div data-hero-flood class="absolute top-[calc(50%-9vmax)] left-[calc(50%-9vmax)] size-[18vmax] scale-start rounded-full bg-yellow"></div>
+
+  <!-- Headline split: travels apart as the bag opens -->
+  <div class="pointer-events-none absolute inset-0 z-30 flex -translate-y-[6vh] flex-col items-center justify-center px-4 text-center">
+    <h1 class="sr-only">Primor, papas fritas caseras y artesanales desde 1973</h1>
+    <span data-hero-line="1" aria-hidden="true" class="display hero-gradient block">Crujientes</span>
+    <span data-hero-line="2" aria-hidden="true" class="display block text-yellow">desde 1973</span>
+  </div>
+
+  <!-- Bag -->
+  <div class="absolute inset-0 z-20 grid place-items-center [perspective:1200px]">
+    <img
+      data-hero-bag
+      src="/img/bag-230.webp"
+      alt="Bolsa de Papitas Fritas Caseras Primor"
+      width="457"
+      height="688"
+      fetchpriority="high"
+      class="hero-bag w-[52vw] max-w-80 [--bag-s:0.62] [--bag-y:16vh] sm:[--bag-s:0.78] sm:[--bag-y:34vh] drop-shadow-[0_40px_60px_rgba(0,0,0,0.55)] sm:w-[34vw]"
+    />
+  </div>
+
+  <!-- Chip burst -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+    {chips.map((c) => (
+      <svg
+        data-chip
+        data-x={c.x}
+        data-y={c.y}
+        data-r={c.r}
+        data-s={c.s}
+        data-sy={c.sy}
+        class:list={['scale-start absolute top-[calc(50%-5.5vmin)] left-[calc(50%-5.5vmin)] size-[11vmin] drop-shadow-[0_18px_22px_rgba(0,0,0,0.35)]', c.z]}
+      >
+        <use href={`#chip-${c.v}`} />
+      </svg>
+    ))}
+  </div>
+
+  <!-- Second beat, revealed on yellow -->
+  <div data-hero-beat class="pointer-events-none absolute inset-x-0 top-[13vh] z-30 px-4 text-center opacity-0">
+    <p class="caption-3 text-ink/70">Rancagua · Chile</p>
+    <p class="heading-2 mx-auto mt-3 max-w-[680px] text-ink sm:text-6xl">Abre una bolsa.<br />Escucha el crunch.</p>
+  </div>
+
+  <!-- Above the fold copy + CTA -->
+  <div data-hero-foot class="absolute inset-x-0 bottom-0 z-30 flex flex-col gap-4 p-4 sm:flex-row sm:items-end sm:justify-between sm:p-8">
+    <p class="body-3 max-w-sm text-cream/75 max-sm:hidden">
+      Papas fritas caseras y artesanales, acompañando los mejores momentos de la familia chilena.
+    </p>
+    <div class="flex flex-wrap items-center gap-4">
+      <span class="caption-5 text-cream/60"><strong class="body-1 text-cream">{FOLLOWERS}</strong> nos siguen en Instagram</span>
+      <a href={STORE_URL} class="btn btn-primary">Comprar en la tienda</a>
+    </div>
+  </div>
+
+  <div data-hero-hint aria-hidden="true" class="absolute bottom-28 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-2 text-cream/50 sm:flex">
+    <span class="caption-3">Desliza</span>
+    <span class="h-8 w-px origin-top animate-pulse bg-cream/40"></span>
+  </div>
+</section>

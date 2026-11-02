@@ -1,0 +1,146 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import AddToCart from '../../components/shop/AddToCart.astro';
+import ProductCard from '../../components/shop/ProductCard.astro';
+import { products, imageFor, formatLabel, shortName, unitPrice, discount, related, clp, families, stockLabel, type CatalogProduct } from '../../data/catalog';
+import { address } from '../../data/site';
+
+export function getStaticPaths() {
+  return products.map((product) => ({ params: { slug: product.slug }, props: { product } }));
+}
+
+const { product: p } = Astro.props as { product: CatalogProduct };
+const imgs = p.images.map(imageFor).filter(Boolean);
+const unit = unitPrice(p);
+const off = discount(p);
+const family = families.find((f) => f.id === p.family)!;
+const more = related(p);
+const description = p.copy[0] ?? `${shortName(p)} Primor, ${formatLabel(p)}.`;
+---
+
+<Layout title={`${shortName(p)}${p.pack > 1 || p.isBox ? ` · ${formatLabel(p)}` : ''} · Primor`} description={description} theme="light">
+  <nav aria-label="Ruta" class="mx-auto max-w-7xl px-4 pt-28 sm:px-8">
+    <ol class="caption-4 flex flex-wrap gap-2 text-ink/50">
+      <li><a href="/tienda" class="hover:text-ink">Tienda</a> /</li>
+      <li><a href={`/tienda?c=${p.family}`} class="hover:text-ink">{family.label}</a> /</li>
+      <li aria-current="page" class="text-ink">{shortName(p)}</li>
+    </ol>
+  </nav>
+
+  <p data-unavailable hidden class="body-5 mx-auto mt-4 max-w-7xl px-4 sm:px-8"><span class="block rounded-xl bg-yellow px-4 py-3">Este producto no está disponible en la tienda por ahora. <a href="/tienda" class="underline">Ver otros productos</a></span></p>
+
+  <article data-product-id={p.id} class="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-8 lg:grid-cols-2 lg:gap-16">
+    <div data-gallery class="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
+      <div class="relative aspect-square overflow-hidden rounded-3xl bg-white ring-1 ring-ink/5">
+        {imgs.map((img, i) => (
+          <Image
+            src={img!}
+            alt={`${p.name}, foto ${i + 1}`}
+            width={900}
+            height={900}
+            format="webp"
+            loading={i === 0 ? 'eager' : 'lazy'}
+            data-slide={i}
+            class:list={['absolute inset-0 size-full object-contain transition-opacity duration-500 ease-out-soft', i === 0 ? 'opacity-100' : 'opacity-0', !p.inStock && 'grayscale']}
+          />
+        ))}
+        {off > 0 && <span class="caption-3 absolute top-4 left-4 rounded-full bg-red px-3 py-1 !tracking-normal text-cream">Ahorras {off}%</span>}
+      </div>
+      {imgs.length > 1 && (
+        <div class="flex gap-2" role="group" aria-label="Fotos del producto">
+          {imgs.map((img, i) => (
+            <button type="button" data-thumb={i} aria-label={`Ver foto ${i + 1}`} aria-pressed={i === 0 ? 'true' : 'false'} class="size-20 overflow-hidden rounded-2xl bg-white ring-1 ring-ink/10 aria-pressed:ring-2 aria-pressed:ring-ink focus-visible:outline-2 focus-visible:outline-red">
+              <Image src={img!} alt="" width={160} height={160} format="webp" class="size-full object-contain" />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <div class="flex flex-col">
+      <p class="caption-3 text-red">{formatLabel(p)}</p>
+      <h1 class="heading-3 mt-2 sm:heading-2">{shortName(p)}</h1>
+
+      <div class="mt-6 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        <span data-price-text class="heading-3 tabular-nums">{clp(p.price)}</span>
+        {off > 0 && <s class="title-1 tabular-nums text-ink/40">{clp(p.regularPrice)}</s>}
+        {unit && <span class="body-5 tabular-nums text-ink/60">equivale a <span data-unit-text={p.pack}>{clp(unit)} c/u</span></span>}
+      </div>
+      {p.lowStock && p.inStock && <p class="body-5 mt-2 text-red">{stockLabel(p.lowStock)} {p.lowStock === 1 ? 'disponible' : 'disponibles'}</p>}
+
+      <div class="mt-8"><AddToCart product={p} size="page" /></div>
+
+      <ul class="mt-6 grid gap-2 rounded-2xl bg-ink/5 p-4">
+        <li class="body-6 flex gap-2"><span aria-hidden="true">●</span>Retiro sin costo en {address.street}, {address.city}</li>
+        <li class="body-6 flex gap-2"><span aria-hidden="true">●</span>Despacho a domicilio con costo según comuna</li>
+        <li class="body-6 flex gap-2"><span aria-hidden="true">●</span>Precio exclusivo de la tienda online</li>
+      </ul>
+
+      {p.copy.length > 0 && <div class="body-3 mt-8 space-y-2 text-ink/80">{p.copy.map((l) => <p>{l}</p>)}</div>}
+
+      {p.contents.length > 0 && (
+        <section class="mt-8">
+          <h2 class="title-2">Qué trae la caja</h2>
+          <ul class="mt-4 grid gap-2 sm:grid-cols-2">
+            {p.contents.map((c) => {
+              const [qty, ...rest] = c.split(' ');
+              return (
+                <li class="body-6 flex items-center gap-2 rounded-xl bg-white px-3 py-2 ring-1 ring-ink/5">
+                  <span class="body-4 grid size-6 shrink-0 place-items-center rounded-full bg-yellow tabular-nums">{qty}</span>
+                  {rest.join(' ')}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
+      {p.ingredients && (
+        <details class="group mt-8 rounded-2xl bg-white px-4 ring-1 ring-ink/5" open>
+          <summary class="title-3 flex cursor-pointer list-none items-center justify-between py-4 [&::-webkit-details-marker]:hidden">
+            Ingredientes
+            <span aria-hidden="true" class="transition-transform duration-500 ease-out-soft group-open:rotate-45">+</span>
+          </summary>
+          <p class="body-6 pb-4 text-ink/70">{p.ingredients}</p>
+        </details>
+      )}
+    </div>
+  </article>
+
+  {more.length > 0 && (
+    <section aria-labelledby="related-title" class="mx-auto max-w-7xl px-4 pb-24 sm:px-8">
+      <h2 id="related-title" class="heading-5">Combina con</h2>
+      <ul class="mt-6 grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-4">
+        {more.map((q, i) => <ProductCard product={q} index={i + 4} />)}
+      </ul>
+    </section>
+  )}
+</Layout>
+
+<script>
+  import { applyProductOverrides, onAdminChange } from '../../lib/overrides';
+  const article = document.querySelector<HTMLElement>('[data-product-id]')!;
+  function syncAdmin() {
+    applyProductOverrides(); // also refreshes the related cards below
+    const hidden = article.hasAttribute('data-admin-hidden');
+    document.querySelector<HTMLElement>('[data-unavailable]')!.hidden = !hidden;
+    if (hidden) {
+      article.querySelectorAll<HTMLElement>('[data-when-stock]').forEach((n) => (n.hidden = true));
+      article.querySelectorAll<HTMLElement>('[data-when-out]').forEach((n) => (n.hidden = false));
+    }
+    document.querySelectorAll<HTMLElement>('[data-card]').forEach((c) => (c.hidden = c.hasAttribute('data-admin-hidden')));
+  }
+  syncAdmin();
+  onAdminChange(syncAdmin);
+  const slides = [...document.querySelectorAll<HTMLElement>('[data-slide]')];
+  const thumbs = [...document.querySelectorAll<HTMLButtonElement>('[data-thumb]')];
+  thumbs.forEach((t) =>
+    t.addEventListener('click', () => {
+      const i = Number(t.dataset.thumb);
+      slides.forEach((s, j) => s.classList.toggle('opacity-0', j !== i));
+      slides.forEach((s, j) => s.classList.toggle('opacity-100', j === i));
+      thumbs.forEach((b, j) => b.setAttribute('aria-pressed', String(j === i)));
+    }),
+  );
+</script>

@@ -1,0 +1,281 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Dashboard from '../components/account/Dashboard.astro';
+
+const field = 'body-6 w-full rounded-xl bg-white px-4 py-3 ring-1 ring-ink/15 placeholder:text-ink/40 focus:ring-2 focus:ring-ink focus:outline-none aria-invalid:ring-2 aria-invalid:ring-red';
+const label = 'title-4 mb-2 block';
+const perks = [
+  { t: 'Boleta o factura', d: 'Guarda tu RUT y razón social para comprar como negocio.' },
+  { t: 'Tus pedidos en un lugar', d: 'Revisa qué pediste y repite una compra con un toque.' },
+  { t: 'Checkout más rápido', d: 'Tus datos y tus direcciones quedan listos para la próxima.' },
+];
+---
+
+<Layout title="Mi cuenta · Primor" description="Ingresa con tu correo para ver tus pedidos, repetir compras y guardar tus datos." theme="light">
+  <!-- Signed out -->
+  <section data-guest hidden class="mx-auto grid max-w-7xl gap-8 px-4 pt-28 pb-24 sm:px-8 sm:pt-36 lg:grid-cols-2 lg:gap-16">
+    <div class="rounded-3xl bg-ink p-8 text-cream sm:p-12">
+      <p class="caption-3 text-yellow">Mi cuenta Primor</p>
+      <h1 class="heading-3 mt-4 sm:heading-2">Sin contraseñas.<br />Solo tu correo.</h1>
+      <p class="body-3 mt-4 max-w-md text-cream/70">Ingresa o crea tu cuenta con un código de 6 dígitos que llega a tu correo. Nada que recordar.</p>
+      <ul class="mt-8 grid gap-4">
+        {perks.map((p) => (
+          <li class="flex gap-4">
+            <svg aria-hidden="true" class="size-10 shrink-0 -rotate-12"><use href="#chip-1" /></svg>
+            <div><p class="title-3">{p.t}</p><p class="body-6 text-cream/60">{p.d}</p></div>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="flex flex-col justify-center">
+      <div data-auth class="rounded-3xl bg-white p-2 ring-1 ring-ink/5">
+        <div role="tablist" aria-label="Acceso" class="grid grid-cols-2 gap-1 rounded-2xl bg-ink/5 p-1">
+          <button type="button" role="tab" id="tab-login" data-mode="ingresar" aria-controls="form-login" aria-selected="true" class="button-md rounded-xl py-3 text-ink/60 transition-colors duration-300 ease-out-soft aria-selected:bg-white aria-selected:text-ink aria-selected:shadow-sm focus-visible:outline-2 focus-visible:outline-red">Ingresar</button>
+          <button type="button" role="tab" id="tab-signup" data-mode="registro" aria-controls="form-signup" aria-selected="false" class="button-md rounded-xl py-3 text-ink/60 transition-colors duration-300 ease-out-soft aria-selected:bg-white aria-selected:text-ink aria-selected:shadow-sm focus-visible:outline-2 focus-visible:outline-red">Crear cuenta</button>
+        </div>
+
+        <!-- Login -->
+        <form id="form-login" role="tabpanel" aria-labelledby="tab-login" data-form-login novalidate class="grid gap-4 p-4 sm:p-6">
+          <div>
+            <h2 class="heading-5">Hola de nuevo</h2>
+            <p class="body-6 mt-1 text-ink/60">Escribe tu correo y te mandamos un código para entrar.</p>
+          </div>
+          <div>
+            <label for="login-email" class={label}>Correo</label>
+            <input id="login-email" name="email" type="email" autocomplete="email" required class={field} placeholder="camila@correo.cl" />
+            <p data-err="login-email" role="alert" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+          <button type="submit" class="btn btn-ink justify-center">Enviarme el código</button>
+          <p class="body-6 text-center text-ink/60">¿Primera vez? <button type="button" data-goto="registro" class="body-4 text-ink underline underline-offset-4">Crea tu cuenta</button></p>
+        </form>
+
+        <!-- Sign up -->
+        <form id="form-signup" role="tabpanel" aria-labelledby="tab-signup" data-form-signup hidden novalidate class="grid gap-4 p-4 sm:grid-cols-2 sm:p-6">
+          <div class="sm:col-span-2">
+            <h2 class="heading-5">Crea tu cuenta Primor</h2>
+            <p class="body-6 mt-1 text-ink/60">Sin contraseña: confirmas tu correo con un código.</p>
+          </div>
+          <div>
+            <label for="su-first" class={label}>Nombre</label>
+            <input id="su-first" name="first" autocomplete="given-name" required class={field} placeholder="Camila" />
+            <p data-err="su-first" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+          <div>
+            <label for="su-last" class={label}>Apellido</label>
+            <input id="su-last" name="last" autocomplete="family-name" required class={field} placeholder="Rojas" />
+            <p data-err="su-last" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="su-email" class={label}>Correo</label>
+            <input id="su-email" name="email" type="email" autocomplete="email" required class={field} placeholder="camila@correo.cl" />
+            <p data-err="su-email" role="alert" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="su-phone" class={label}>Celular <span class="text-ink/40">(opcional)</span></label>
+            <input id="su-phone" name="phone" type="tel" autocomplete="tel" class={field} placeholder="+56 9 1234 5678" />
+            <p data-err="su-phone" class="caption-5 mt-1 hidden text-red"></p>
+          </div>
+          <label class="body-6 flex items-start gap-2 sm:col-span-2">
+            <input type="checkbox" name="terms" class="mt-1 size-4 accent-ink" />
+            <span>Acepto los <a href="/terminos" class="underline">términos</a> y la <a href="/privacidad" class="underline">política de privacidad</a>.</span>
+          </label>
+          <p data-err="su-terms" class="caption-5 -mt-2 hidden text-red sm:col-span-2"></p>
+          <label class="body-6 flex items-start gap-2 sm:col-span-2">
+            <input type="checkbox" name="promos" class="mt-1 size-4 accent-ink" />
+            <span>Quiero recibir novedades y promociones por correo.</span>
+          </label>
+          <button type="submit" class="btn btn-ink justify-center sm:col-span-2">Crear cuenta</button>
+          <p class="body-6 text-center text-ink/60 sm:col-span-2">¿Ya tienes cuenta? <button type="button" data-goto="ingresar" class="body-4 text-ink underline underline-offset-4">Ingresa</button></p>
+        </form>
+      </div>
+
+      <form data-step-code hidden novalidate class="rounded-3xl bg-white p-6 ring-1 ring-ink/5 sm:p-8">
+        <button type="button" data-back class="caption-4 text-ink/50 hover:text-ink">← Volver</button>
+        <h2 class="heading-5 mt-4">Revisa tu correo</h2>
+        <p class="body-6 mt-2 text-ink/70">Enviamos un código a <strong data-sent-to class="body-4"></strong>.</p>
+        <p class="caption-5 mt-4 rounded-xl bg-yellow px-3 py-2">Modo desarrollo (sin servicio de correo): tu código es <strong data-demo-code class="body-4 tabular-nums tracking-widest"></strong></p>
+        <fieldset class="mt-6">
+          <legend class={label}>Código de 6 dígitos</legend>
+          <div data-otp class="flex gap-2">
+            {Array.from({ length: 6 }, (_, i) => (
+              <input
+                inputmode="numeric"
+                autocomplete={i === 0 ? 'one-time-code' : 'off'}
+                maxlength="1"
+                aria-label={`Dígito ${i + 1}`}
+                class="heading-5 size-12 rounded-xl bg-white text-center tabular-nums ring-1 ring-ink/15 focus:ring-2 focus:ring-ink focus:outline-none aria-invalid:ring-red sm:size-14"
+              />
+            ))}
+          </div>
+        </fieldset>
+        <p data-code-error role="alert" class="caption-5 mt-2 hidden text-red"></p>
+        <button type="submit" class="btn btn-ink mt-6 w-full justify-center"><span data-code-submit>Ingresar</span></button>
+      </form>
+    </div>
+  </section>
+
+  <Dashboard />
+</Layout>
+
+<script>
+  import { account } from '../lib/account';
+  import { ApiError } from '../lib/api';
+  import { safeRedirect } from '../lib/security';
+
+  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector<T>(s)!;
+  const guest = $('[data-guest]');
+  const member = $('[data-member]');
+  const codeForm = $<HTMLFormElement>('[data-step-code]');
+  const otp = [...document.querySelectorAll<HTMLInputElement>('[data-otp] input')];
+  const next = new URLSearchParams(location.search).get('volver');
+
+  const showError = (el: HTMLElement, msg: string) => {
+    el.textContent = msg;
+    el.classList.toggle('hidden', !msg);
+  };
+
+  /* ---------- Tabs: Ingresar / Crear cuenta (kept in ?modo= so links can open either) ---------- */
+  const auth = $('[data-auth]');
+  const loginForm = $<HTMLFormElement>('[data-form-login]');
+  const signupForm = $<HTMLFormElement>('[data-form-signup]');
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-mode]')];
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function setMode(mode: 'ingresar' | 'registro', focus = false) {
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.mode === mode)));
+    loginForm.hidden = mode !== 'ingresar';
+    signupForm.hidden = mode !== 'registro';
+    const params = new URLSearchParams(location.search);
+    params.set('modo', mode);
+    history.replaceState(null, '', `?${params}${location.hash}`);
+    if (focus) (mode === 'ingresar' ? $<HTMLInputElement>('#login-email') : $<HTMLInputElement>('#su-first')).focus();
+  }
+  tabs.forEach((t) => t.addEventListener('click', () => setMode(t.dataset.mode as 'ingresar' | 'registro', true)));
+  document.querySelectorAll<HTMLButtonElement>('[data-goto]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const mode = b.dataset.goto as 'ingresar' | 'registro';
+      // carry the email over between forms
+      const from = mode === 'registro' ? '#login-email' : '#su-email';
+      const to = mode === 'registro' ? '#su-email' : '#login-email';
+      $<HTMLInputElement>(to).value ||= $<HTMLInputElement>(from).value;
+      setMode(mode, true);
+    }),
+  );
+  setMode(new URLSearchParams(location.search).get('modo') === 'registro' ? 'registro' : 'ingresar');
+
+  const fieldErr = (id: string, msg: string) => {
+    showError($(`[data-err="${id}"]`), msg);
+    document.getElementById(id)?.setAttribute('aria-invalid', String(!!msg));
+    return !msg;
+  };
+
+  let pendingEmail = '';
+  const busy = (form: HTMLFormElement, on: boolean) => form.querySelectorAll<HTMLButtonElement>('button[type=submit]').forEach((b) => (b.disabled = on));
+
+  function toCode(email: string, devCode: string | undefined, isSignUp: boolean) {
+    pendingEmail = email;
+    $('[data-sent-to]').textContent = email;
+    // only local development returns the code; in production it arrives by email
+    $('[data-demo-code]').textContent = devCode ?? '';
+    $('[data-demo-code]').closest('p')!.hidden = !devCode;
+    $('[data-code-submit]').textContent = isSignUp ? 'Confirmar y crear cuenta' : 'Ingresar';
+    auth.hidden = true;
+    codeForm.hidden = false;
+    otp.forEach((i) => (i.value = ''));
+    otp[0].focus();
+  }
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = $<HTMLInputElement>('#login-email').value.trim();
+    if (!fieldErr('login-email', EMAIL.test(email) ? '' : 'Revisa el correo, falta algo como nombre@correo.cl.')) return $('#login-email').focus();
+    busy(loginForm, true);
+    try {
+      const r = await account.requestCode(email, 'ingresar');
+      toCode(email, r.devCode, false);
+    } catch (err) {
+      fieldErr('login-email', err instanceof ApiError ? err.message : 'No pudimos enviar el código.');
+    } finally {
+      busy(loginForm, false);
+    }
+  });
+
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const d = new FormData(signupForm);
+    const v = (k: string) => String(d.get(k) ?? '').trim();
+    const phone = v('phone');
+    const checks = [
+      fieldErr('su-first', v('first').length >= 2 ? '' : 'Escribe tu nombre.'),
+      fieldErr('su-last', v('last').length >= 2 ? '' : 'Escribe tu apellido.'),
+      fieldErr('su-email', !EMAIL.test(v('email')) ? 'Revisa el correo, falta algo como nombre@correo.cl.' : ''),
+      fieldErr('su-phone', !phone || /^(56)?9\d{8}$/.test(phone.replace(/\D/g, '')) ? '' : 'Usa un celular chileno, por ejemplo +56 9 1234 5678.'),
+      fieldErr('su-terms', d.get('terms') === 'on' ? '' : 'Necesitas aceptar los términos para crear tu cuenta.'),
+    ];
+    const firstBad = ['su-first', 'su-last', 'su-email', 'su-phone'][checks.findIndex((c) => !c)];
+    if (checks.some((c) => !c)) return firstBad && document.getElementById(firstBad)?.focus();
+    busy(signupForm, true);
+    try {
+      const r = await account.requestCode(v('email'), 'registro', { first: v('first'), last: v('last'), phone, promos: d.get('promos') === 'on', terms: true });
+      toCode(v('email'), r.devCode, true);
+    } catch (err) {
+      fieldErr('su-email', err instanceof ApiError ? err.message : 'No pudimos enviar el código.');
+    } finally {
+      busy(signupForm, false);
+    }
+  });
+
+  $('[data-back]').addEventListener('click', () => {
+    codeForm.hidden = true;
+    auth.hidden = false;
+  });
+
+  /* ---------- Step 2: 6 digit code with auto advance and paste ---------- */
+  otp.forEach((input, i) => {
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/\D/g, '').slice(-1);
+      if (input.value && otp[i + 1]) otp[i + 1].focus();
+      if (otp.every((o) => o.value)) codeForm.requestSubmit();
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !input.value && otp[i - 1]) otp[i - 1].focus();
+    });
+    input.addEventListener('paste', (e) => {
+      const digits = (e.clipboardData?.getData('text') ?? '').replace(/\D/g, '').slice(0, 6);
+      if (!digits) return;
+      e.preventDefault();
+      digits.split('').forEach((d, k) => otp[k] && (otp[k].value = d));
+      otp[Math.min(digits.length, 5)].focus();
+      if (digits.length === 6) codeForm.requestSubmit();
+    });
+  });
+  let verifying = false;
+  codeForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (verifying) return;
+    verifying = true;
+    const err = $('[data-code-error]');
+    try {
+      await account.verify(pendingEmail, otp.map((o) => o.value).join(''));
+      otp.forEach((o) => o.setAttribute('aria-invalid', 'false'));
+      showError(err, '');
+      if (next) location.href = safeRedirect(next, '/cuenta');
+    } catch (ex) {
+      otp.forEach((o) => o.setAttribute('aria-invalid', 'true'));
+      showError(err, ex instanceof ApiError ? ex.message : 'No pudimos verificar el código.');
+      if (ex instanceof ApiError && ex.status === 401) {
+        otp.forEach((o) => (o.value = ''));
+        otp[0].focus();
+      }
+    } finally {
+      verifying = false;
+    }
+  });
+
+  account.onChange((u) => {
+    guest.hidden = !!u;
+    member.hidden = !u;
+    if (u && location.search.includes('modo=')) history.replaceState(null, '', location.pathname + location.hash);
+  });
+</script>

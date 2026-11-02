@@ -1,0 +1,37 @@
+---
+import { posts, INSTAGRAM_URL, FOLLOWERS } from '../data/site';
+
+const columns = [posts.filter((_, i) => i % 3 === 0), posts.filter((_, i) => i % 3 === 1), posts.filter((_, i) => i % 3 === 2)];
+const speeds = [-12, 10, -20];
+---
+
+<section id="comunidad" aria-labelledby="comunidad-title" class="relative overflow-hidden bg-cream py-24 text-ink sm:py-32">
+  <div data-reveal class="mx-auto max-w-7xl px-4 sm:px-8">
+    <p class="caption-3 text-red">@papasprimor</p>
+    <div class="mt-4 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+      <h2 id="comunidad-title" class="heading-3 max-w-[680px] sm:heading-1">
+        {FOLLOWERS} personas<br />ya siguen el crunch
+      </h2>
+      <a href={INSTAGRAM_URL} class="btn btn-ink self-start md:self-auto" rel="noopener" target="_blank">Seguir en Instagram</a>
+    </div>
+  </div>
+
+  <div class="mx-auto mt-16 grid max-w-7xl grid-cols-2 gap-4 px-4 sm:grid-cols-3 sm:gap-6 sm:px-8">
+    {columns.map((col, ci) => (
+      <div data-parallax={speeds[ci]} class:list={['flex flex-col gap-4 sm:gap-6', ci === 2 && 'max-sm:hidden', ci === 1 && 'mt-16']}>
+        {col.map((p) => (
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener" class="group block overflow-hidden rounded-3xl bg-ink/5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red">
+            <img
+              src={p.img}
+              alt={p.alt}
+              width={p.w}
+              height={p.h}
+              loading="lazy"
+              class="w-full transition-transform duration-500 ease-out-soft group-hover:scale-105"
+            />
+          </a>
+        ))}
+      </div>
+    ))}
+  </div>
+</section>

@@ -1,0 +1,487 @@
+---
+import { jsonForScript } from '../lib/security';
+import { getImage } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import { builderItems, promoBoxes, BOX_CAPACITY } from '../data/builder';
+import { imageFor, bySlug, clp } from '../data/catalog';
+
+// Cart thumbnails use the same optimized images as the store.
+const thumbs: Record<number, string> = {};
+for (const it of [...builderItems, ...promoBoxes]) {
+  const src = imageFor(bySlug(it.slug)!.images[0]);
+  if (src) thumbs[it.id] = (await getImage({ src, width: 160, format: 'webp' })).src;
+}
+const config = {
+  capacity: BOX_CAPACITY,
+  items: builderItems.map((i) => ({ ...i, thumb: thumbs[i.id] })),
+  boxes: promoBoxes.map((b) => ({ ...b, thumb: thumbs[b.id] })),
+};
+---
+
+<Layout
+  title="Arma tu caja · Primor"
+  description="Elige tus snacks Primor favoritos, míralos caer en la caja y llévatelos. Te avisamos si una caja promo te sale más barata."
+  theme="light"
+>
+  <section class="mx-auto max-w-7xl px-4 pt-28 pb-8 sm:px-8 sm:pt-36">
+    <p class="caption-3 text-red">Nuevo · experimental</p>
+    <div class="mt-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <h1 class="heading-2 max-w-[680px] sm:heading-1">Arma tu caja Primor</h1>
+      <p class="body-3 max-w-sm text-ink/70">Toca un snack para dejarlo caer. Toca uno dentro de la caja para sacarlo. Hasta {BOX_CAPACITY} bolsas.</p>
+    </div>
+  </section>
+
+  <section class="mx-auto grid max-w-7xl gap-4 px-4 pb-24 sm:px-8 lg:grid-cols-[360px_1fr] lg:gap-8">
+    <!-- Shelf -->
+    <div class="order-2 lg:order-1">
+      <h2 class="title-2">Elige tus snacks</h2>
+      <ul class="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-3">
+        {builderItems.map((it) => (
+          <li>
+            <button
+              type="button"
+              data-drop={it.id}
+              disabled={!it.inStock}
+              aria-label={`Agregar ${it.name} a la caja, ${clp(it.price)}`}
+              class="group flex w-full flex-col items-center gap-1 rounded-2xl bg-white p-2 ring-1 ring-ink/5 transition-transform duration-500 ease-out-soft hover:-translate-y-1 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-red"
+            >
+              <img src={it.img} alt="" width="120" height="160" loading="lazy" class="h-20 w-auto transition-transform duration-500 ease-out-soft group-hover:-rotate-6 group-disabled:grayscale" />
+              <span class="caption-4 line-clamp-2 min-h-8 text-center leading-4">{it.name}</span>
+              <span class="body-4 tabular-nums">{it.inStock ? clp(it.price) : 'Agotado'}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Stage -->
+    <div class="order-1 lg:order-2">
+      <div class="relative overflow-hidden rounded-3xl bg-yellow">
+        <div data-stage class="relative aspect-[4/3] w-full touch-manipulation sm:aspect-[16/11]">
+          <canvas data-canvas aria-hidden="true" class="absolute inset-0 size-full cursor-pointer"></canvas>
+          <p data-hint class="body-5 pointer-events-none absolute inset-x-0 top-[18%] text-center text-ink/60">Tu caja está vacía. Toca un snack.</p>
+          <p data-full role="status" class="caption-3 pointer-events-none absolute top-4 left-1/2 hidden -translate-x-1/2 rounded-full bg-ink px-3 py-2 !tracking-normal text-cream">Caja llena</p>
+        </div>
+        <div class="absolute top-4 right-4 flex gap-2">
+          <button type="button" data-sound aria-pressed="true" class="button-sm rounded-full bg-ink/10 px-3 py-2 transition-colors duration-300 ease-out-soft hover:bg-ink/20 focus-visible:outline-2 focus-visible:outline-ink">Sonido: sí</button>
+          <button type="button" data-empty class="button-sm rounded-full bg-ink/10 px-3 py-2 transition-colors duration-300 ease-out-soft hover:bg-ink/20 focus-visible:outline-2 focus-visible:outline-ink">Vaciar</button>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="mt-4 grid gap-4 rounded-3xl bg-ink p-6 text-cream md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+          <p class="caption-3 text-cream/60"><span data-box-count>0</span> / {BOX_CAPACITY} bolsas</p>
+          <p class="heading-3 mt-2 tabular-nums text-yellow" data-box-total>$0</p>
+          <ul data-box-list aria-live="polite" class="mt-4 flex flex-wrap gap-2"></ul>
+        </div>
+        <div class="flex flex-col gap-2 md:items-end">
+          <button type="button" data-checkout disabled class="btn btn-primary justify-center disabled:cursor-not-allowed disabled:opacity-40">Agregar al carrito</button>
+          <button type="button" data-share disabled class="button-sm text-cream/70 underline-offset-4 hover:underline disabled:opacity-40">Copiar enlace de mi caja</button>
+        </div>
+      </div>
+
+      <div data-deal hidden class="mt-4 flex flex-col gap-4 rounded-3xl bg-red p-6 text-cream sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="caption-3 text-cream/70">Dato Primor</p>
+          <p data-deal-text class="title-1 mt-2 max-w-md"></p>
+        </div>
+        <button type="button" data-deal-btn class="btn shrink-0 justify-center bg-cream text-ink"></button>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline type="application/json" id="builder-config" set:html={jsonForScript(config)} />
+
+<script>
+  import Matter from 'matter-js';
+  import { cart, clp } from '../lib/cart';
+  import { productOverrides, onAdminChange } from '../lib/overrides';
+
+  type Item = { id: number; slug: string; name: string; format: string; price: number; inStock: boolean; img: string; thumb: string };
+  type Box = { id: number; slug: string; name: string; cartName: string; format: string; price: number; items: Record<string, number>; single: number; thumb: string };
+  const cfg: { capacity: number; items: Item[]; boxes: Box[] } = JSON.parse(document.getElementById('builder-config')!.textContent!);
+  // Owner's price/stock/visibility from the admin panel, re-applied live.
+  // Bags already in the box keep counting at the new price; hidden products can't be added.
+  const base = new Map(cfg.items.map((i) => [i.id, { ...i }]));
+  const byId = new Map(cfg.items.map((i) => [i.id, i]));
+  function applyAdmin() {
+    const ov = productOverrides();
+    for (const [id, b] of base) {
+      const o = ov[id] ?? {};
+      byId.set(id, { ...b, price: o.price ?? b.price, inStock: !o.hidden && (o.inStock ?? b.inStock) });
+    }
+    document.querySelectorAll<HTMLButtonElement>('[data-drop]').forEach((btn) => {
+      const id = Number(btn.dataset.drop);
+      const it = byId.get(id)!;
+      btn.closest('li')!.hidden = !!ov[id]?.hidden;
+      btn.querySelector('.body-4')!.textContent = it.inStock ? clp(it.price) : 'Agotado';
+      btn.setAttribute('aria-label', `Agregar ${it.name} a la caja, ${clp(it.price)}`);
+    });
+  }
+  applyAdmin();
+  // Promo boxes priced live too: the owner may change the box or its bags.
+  const boxPrice = (b: Box) => productOverrides()[b.id]?.price ?? b.price;
+  const boxSingle = (b: Box) => Object.entries(b.items).reduce((n, [id, q]) => n + q * (byId.get(Number(id))?.price ?? 0), 0);
+  const boxOn = (b: Box) => !productOverrides()[b.id]?.hidden && productOverrides()[b.id]?.inStock !== false;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const stage = document.querySelector<HTMLElement>('[data-stage]')!;
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-canvas]')!;
+  const ctx = canvas.getContext('2d')!;
+  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector<T>(s)!;
+
+  /* ---------- Images ---------- */
+  const sprites = new Map<number, HTMLImageElement>();
+  const sprite = (id: number) => {
+    if (!sprites.has(id)) {
+      const img = new Image();
+      img.src = byId.get(id)!.img;
+      sprites.set(id, img);
+    }
+    return sprites.get(id)!;
+  };
+  const logo = new Image();
+  logo.src = '/img/logo.webp';
+
+  /* ---------- Physics world shaped like an open cardboard box ---------- */
+  const { Engine, Bodies, Body, Composite, Events, Query } = Matter;
+  const engine = Engine.create({ gravity: { y: 1.1 } });
+  let W = 0, H = 0, dpr = 1;
+  let walls: Matter.Body[] = [];
+  const geo = { left: 0, right: 0, floor: 0, top: 0, front: 0, itemW: 0 };
+
+  function layout() {
+    const r = stage.getBoundingClientRect();
+    const prevW = W || r.width;
+    W = r.width;
+    H = r.height;
+    dpr = Math.min(2, devicePixelRatio || 1);
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    geo.left = W * 0.24;
+    geo.right = W * 0.76;
+    geo.floor = H * 0.93;
+    geo.top = H * 0.3;
+    geo.front = H * 0.84; // a low lip, so the stack stays visible
+    geo.itemW = Math.max(48, Math.min(112, W * 0.12));
+
+    Composite.remove(engine.world, walls);
+    const t = 400;
+    walls = [
+      Bodies.rectangle(W / 2, geo.floor + t / 2, W, t, { isStatic: true }),
+      Bodies.rectangle(geo.left - t / 2, geo.floor - H, t, H * 2.2, { isStatic: true }),
+      Bodies.rectangle(geo.right + t / 2, geo.floor - H, t, H * 2.2, { isStatic: true }),
+    ];
+    Composite.add(engine.world, walls);
+
+    // Keep existing bags proportional when the stage resizes.
+    const k = W / prevW;
+    if (k !== 1) for (const b of bags()) {
+      Body.scale(b, k, k);
+      b.plugin.w *= k;
+      b.plugin.h *= k;
+      Body.setPosition(b, { x: b.position.x * k, y: Math.min(b.position.y * k, geo.floor - 20) });
+    }
+  }
+
+  const bags = () => Composite.allBodies(engine.world).filter((b) => b.label.startsWith('bag:'));
+  const idOf = (b: Matter.Body) => Number(b.label.slice(4));
+
+  function dropBag(id: number, x = W / 2 + (Math.random() - 0.5) * (geo.right - geo.left) * 0.5) {
+    const img = sprite(id);
+    const ratio = img.naturalHeight && img.naturalWidth ? img.naturalHeight / img.naturalWidth : 1.35;
+    const w = geo.itemW;
+    const h = w * ratio;
+    const body = Bodies.rectangle(x, -h, w, h, {
+      label: `bag:${id}`,
+      chamfer: { radius: w * 0.18 },
+      restitution: 0.25,
+      friction: 0.6,
+      density: 0.002,
+      angle: (Math.random() - 0.5) * 0.8,
+      plugin: { w, h },
+    });
+    Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.2);
+    Composite.add(engine.world, body);
+    if (reduced) for (let i = 0; i < 240; i++) Engine.update(engine, 1000 / 60);
+  }
+
+  /* ---------- Crunch: filtered noise burst, synthesized, no audio files ---------- */
+  let audio: AudioContext | null = null;
+  let soundOn = true;
+  let lastCrunch = 0;
+  function crunch(strength: number) {
+    if (!soundOn || reduced) return;
+    const now = performance.now();
+    if (now - lastCrunch < 70) return;
+    lastCrunch = now;
+    audio ??= new AudioContext();
+    const len = 0.09 + strength * 0.08;
+    const buf = audio.createBuffer(1, Math.floor(audio.sampleRate * len), audio.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      const t = i / data.length;
+      // crackle: sparse spikes over decaying noise
+      data[i] = (Math.random() * 2 - 1) * (Math.random() < 0.25 ? 1 : 0.25) * Math.pow(1 - t, 2.5);
+    }
+    const src = audio.createBufferSource();
+    src.buffer = buf;
+    const band = audio.createBiquadFilter();
+    band.type = 'bandpass';
+    band.frequency.value = 1800 + Math.random() * 2200;
+    band.Q.value = 0.9;
+    const gain = audio.createGain();
+    gain.gain.value = Math.min(0.5, 0.12 + strength * 0.35);
+    src.connect(band).connect(gain).connect(audio.destination);
+    src.start();
+  }
+  Events.on(engine, 'collisionStart', (e) => {
+    for (const p of e.pairs) {
+      const speed = Math.max(p.bodyA.speed, p.bodyB.speed);
+      if (speed > 3 && (p.bodyA.label.startsWith('bag:') || p.bodyB.label.startsWith('bag:'))) crunch(Math.min(1, speed / 14));
+    }
+  });
+
+  /* ---------- Rendering ---------- */
+  function roundRect(x: number, y: number, w: number, h: number, r: number, fill: string) {
+    ctx.fillStyle = fill;
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+    ctx.fill();
+  }
+  function draw() {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const { left, right, floor, top, front } = geo;
+    const bw = right - left;
+
+    // floor shadow
+    ctx.fillStyle = 'rgba(19,18,9,0.12)';
+    ctx.beginPath();
+    ctx.ellipse(W / 2, floor + 6, bw * 0.62, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // back wall + flaps
+    roundRect(left - 6, top, bw + 12, floor - top, 10, '#b98245');
+    ctx.fillStyle = '#c99556';
+    ctx.beginPath();
+    ctx.moveTo(left - 6, top + 2);
+    ctx.lineTo(left - bw * 0.16, top - H * 0.1);
+    ctx.lineTo(left + bw * 0.08, top - H * 0.07);
+    ctx.lineTo(left + 14, top + 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(right + 6, top + 2);
+    ctx.lineTo(right + bw * 0.16, top - H * 0.1);
+    ctx.lineTo(right - bw * 0.08, top - H * 0.07);
+    ctx.lineTo(right - 14, top + 2);
+    ctx.fill();
+
+    // bags
+    for (const b of bags()) {
+      const img = sprite(idOf(b));
+      if (!img.complete || !img.naturalWidth) continue;
+      const { w, h } = b.plugin as { w: number; h: number };
+      ctx.save();
+      ctx.translate(b.position.x, b.position.y);
+      ctx.rotate(b.angle);
+      ctx.shadowColor = 'rgba(0,0,0,0.25)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 4;
+      ctx.drawImage(img, -w / 2, -h / 2, w, h);
+      ctx.restore();
+    }
+
+    // front panel (bags below it read as inside the box)
+    roundRect(left - 10, front, bw + 20, floor - front + 4, 10, '#d9a86a');
+    ctx.fillStyle = 'rgba(19,18,9,0.08)';
+    ctx.fillRect(left - 10, front, bw + 20, 6);
+    if (logo.complete && logo.naturalWidth) {
+      const lw = Math.min(bw * 0.42, 220);
+      const lh = (lw * logo.naturalHeight) / logo.naturalWidth;
+      ctx.globalAlpha = 0.9;
+      ctx.drawImage(logo, W / 2 - lw / 2, front + (floor - front - lh) / 2, lw, lh);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // Fixed 60 Hz physics steps driven by real elapsed time, so slow phones and
+  // throttled tabs simulate the same fall instead of slow motion.
+  const STEP = 1000 / 60;
+  let last = performance.now();
+  let acc = 0;
+  function loop(now = performance.now()) {
+    acc = Math.min(acc + (now - last), STEP * 120);
+    last = now;
+    while (acc >= STEP) {
+      Engine.update(engine, STEP);
+      acc -= STEP;
+    }
+    // bags knocked out of the stage come back to the box
+    for (const b of bags()) if (b.position.y > H + 200 || b.position.x < -100 || b.position.x > W + 100) Body.setPosition(b, { x: W / 2, y: -50 });
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  /* ---------- State + UI ---------- */
+  const counts = () => {
+    const m = new Map<number, number>();
+    for (const b of bags()) m.set(idOf(b), (m.get(idOf(b)) ?? 0) + 1);
+    return m;
+  };
+
+  function bestDeal(m: Map<number, number>) {
+    let best: { box: Box; missing: number; covered: boolean } | null = null;
+    for (const box of cfg.boxes.filter((b) => boxOn(b) && boxSingle(b) > boxPrice(b))) {
+      const need = Object.entries(box.items);
+      const total = need.reduce((n, [, q]) => n + q, 0);
+      const have = need.reduce((n, [id, q]) => n + Math.min(q, m.get(Number(id)) ?? 0), 0);
+      const missing = total - have;
+      if (have / total < 0.5) continue;
+      const cand = { box, missing, covered: missing === 0 };
+      if (!best || cand.missing < best.missing || (cand.covered && boxSingle(box) - boxPrice(box) > boxSingle(best.box) - boxPrice(best.box))) best = cand;
+    }
+    return best;
+  }
+
+  let swapBox: Box | null = null;
+  let restoring = false;
+  function sync() {
+    const m = counts();
+    const n = [...m.values()].reduce((a, b) => a + b, 0);
+    const total = [...m].reduce((s, [id, q]) => s + q * byId.get(id)!.price, 0);
+    $('[data-box-count]').textContent = String(n);
+    $('[data-box-total]').textContent = clp(total);
+    $('[data-hint]').hidden = n > 0;
+    $('[data-full]').classList.toggle('hidden', n < cfg.capacity);
+    $<HTMLButtonElement>('[data-checkout]').disabled = n === 0;
+    $<HTMLButtonElement>('[data-share]').disabled = n === 0;
+    $<HTMLButtonElement>('[data-checkout]').textContent = n ? `Agregar ${n} ${n === 1 ? 'bolsa' : 'bolsas'} al carrito` : 'Agregar al carrito';
+    document.querySelectorAll<HTMLButtonElement>('[data-drop]').forEach((b) => {
+      const it = byId.get(Number(b.dataset.drop))!;
+      b.disabled = !it.inStock || n >= cfg.capacity;
+    });
+
+    $('[data-box-list]').replaceChildren(
+      ...[...m].map(([id, q]) => {
+        const li = document.createElement('li');
+        li.className = 'caption-4 rounded-full bg-cream/10 px-3 py-1';
+        li.textContent = `${q} × ${byId.get(id)!.name}`;
+        return li;
+      }),
+    );
+
+    const deal = bestDeal(m);
+    const box = $('[data-deal]');
+    swapBox = deal?.covered ? deal.box : null;
+    box.hidden = !deal;
+    if (deal) {
+      const save = boxSingle(deal.box) - boxPrice(deal.box);
+      $('[data-deal-text]').textContent = deal.covered
+        ? `Todo lo de la caja ${deal.box.name} ya está en tu caja. Comprándola como caja pagas ${clp(boxPrice(deal.box))} y ahorras ${clp(save)}.`
+        : `Te ${deal.missing === 1 ? 'falta 1 bolsa' : `faltan ${deal.missing} bolsas`} para completar la caja ${deal.box.name}, que cuesta ${clp(boxPrice(deal.box))} (ahorras ${clp(save)}).`;
+      const btn = $<HTMLButtonElement>('[data-deal-btn]');
+      btn.textContent = deal.covered ? 'Cambiar por la caja' : 'Completarla';
+      btn.onclick = () => {
+        if (deal.covered) return checkout(true);
+        const mm = counts();
+        for (const [id, q] of Object.entries(deal.box.items)) for (let i = mm.get(Number(id)) ?? 0; i < q; i++) bags().length < cfg.capacity && dropBag(Number(id));
+        setTimeout(sync, 50);
+      };
+    }
+
+    if (restoring) return; // keep the shared link intact until every bag has landed
+    const params = new URLSearchParams(location.search);
+    if (n) params.set('caja', [...m].map(([id, q]) => (q > 1 ? `${id}x${q}` : id)).join('.'));
+    else params.delete('caja');
+    history.replaceState(null, '', params.size ? `?${params}` : location.pathname);
+  }
+
+  function checkout(useBox = false) {
+    const m = counts();
+    if (useBox && swapBox) {
+      for (const [id, q] of Object.entries(swapBox.items)) m.set(Number(id), (m.get(Number(id)) ?? 0) - q);
+      cart.add({ id: swapBox.id, slug: swapBox.slug, name: swapBox.cartName, format: swapBox.format, price: boxPrice(swapBox), img: swapBox.thumb, max: 99 });
+    }
+    for (const [id, q] of m) {
+      if (q <= 0) continue;
+      const it = byId.get(id)!;
+      cart.add({ id, slug: it.slug, name: it.name, format: it.format, price: it.price, img: it.thumb, max: 99 }, q);
+    }
+    const bags = [...m.values()].filter((q) => q > 0).reduce((n, q) => n + q, 0);
+    const label = useBox && swapBox ? `Caja ${swapBox.name}${bags ? ` + ${bags} ${bags === 1 ? 'bolsa' : 'bolsas'}` : ''}` : `Tu caja · ${bags} ${bags === 1 ? 'bolsa' : 'bolsas'}`;
+    document.dispatchEvent(new CustomEvent('cart:added', { detail: { name: label, img: useBox && swapBox ? swapBox.thumb : byId.get([...m.keys()][0])?.thumb } }));
+  }
+
+  /* ---------- Events ---------- */
+  document.querySelectorAll<HTMLButtonElement>('[data-drop]').forEach((b) =>
+    b.addEventListener('click', () => {
+      if (bags().length >= cfg.capacity) return;
+      audio?.resume();
+      dropBag(Number(b.dataset.drop));
+      sync();
+    }),
+  );
+  canvas.addEventListener('pointerdown', (e) => {
+    const r = canvas.getBoundingClientRect();
+    const hit = Query.point(bags(), { x: e.clientX - r.left, y: e.clientY - r.top })[0];
+    if (!hit) return;
+    Body.setVelocity(hit, { x: (Math.random() - 0.5) * 12, y: -18 });
+    hit.collisionFilter.mask = 0; // fly out through the walls
+    setTimeout(() => {
+      Composite.remove(engine.world, hit);
+      sync();
+    }, 600);
+  });
+  $('[data-empty]').addEventListener('click', () => {
+    Composite.remove(engine.world, bags());
+    sync();
+  });
+  $('[data-sound]').addEventListener('click', (e) => {
+    soundOn = !soundOn;
+    const b = e.currentTarget as HTMLElement;
+    b.setAttribute('aria-pressed', String(soundOn));
+    b.textContent = `Sonido: ${soundOn ? 'sí' : 'no'}`;
+  });
+  $('[data-checkout]').addEventListener('click', () => checkout(false));
+  $('[data-share]').addEventListener('click', async (e) => {
+    const b = e.currentTarget as HTMLElement;
+    try {
+      await navigator.clipboard.writeText(location.href);
+      b.textContent = 'Enlace copiado';
+    } catch {
+      b.textContent = 'Copia la dirección del navegador';
+    }
+    setTimeout(() => (b.textContent = 'Copiar enlace de mi caja'), 1800);
+  });
+
+  new ResizeObserver(() => layout()).observe(stage);
+  layout();
+
+  // Restore a shared box: ?caja=68x2.118.72
+  const shared = new URLSearchParams(location.search).get('caja');
+  if (shared) {
+    const queue = shared
+      .split('.')
+      .flatMap((tok) => {
+        const [id, q = '1'] = tok.split('x');
+        return byId.get(Number(id))?.inStock ? Array<number>(Math.min(Number(q) || 1, cfg.capacity)).fill(Number(id)) : [];
+      })
+      .slice(0, cfg.capacity);
+    restoring = queue.length > 0;
+    queue.forEach((id, i) =>
+      setTimeout(() => {
+        dropBag(id);
+        if (i === queue.length - 1) restoring = false;
+        sync();
+      }, reduced ? 0 : i * 220),
+    );
+  }
+  sync();
+  loop();
+  onAdminChange(() => {
+    applyAdmin();
+    sync();
+  });
+</script>

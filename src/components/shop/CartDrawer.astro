@@ -1,0 +1,196 @@
+---
+// Global cart drawer. Opened by any [data-cart-open] button; content rendered from the client cart.
+---
+
+<dialog
+  id="cart-drawer"
+  aria-labelledby="cart-title"
+  class="fixed inset-0 m-0 ml-auto h-dvh max-h-none w-full max-w-md bg-cream p-0 text-ink backdrop:bg-ink/50 backdrop:backdrop-blur-sm open:flex open:flex-col"
+>
+  <header class="flex items-center justify-between gap-4 p-6">
+    <div class="flex items-baseline gap-3">
+      <h2 id="cart-title" class="heading-5">Tu carrito</h2>
+      <span data-cart-head-count class="caption-4 text-ink/50"></span>
+    </div>
+    <button type="button" data-cart-clear hidden class="button-sm ml-auto rounded-full px-3 py-1.5 text-ink/60 ring-1 ring-ink/15 transition-colors duration-300 ease-out-soft hover:bg-red hover:text-cream hover:ring-red focus-visible:outline-2 focus-visible:outline-red">Vaciar carrito</button>
+    <button type="button" data-cart-close aria-label="Cerrar carrito" class="grid size-10 place-items-center rounded-full bg-ink/5 transition-transform duration-500 ease-out-soft hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-red">
+      <span class="absolute h-0.5 w-4 rotate-45 rounded bg-ink"></span>
+      <span class="absolute h-0.5 w-4 -rotate-45 rounded bg-ink"></span>
+    </button>
+  </header>
+
+  <div data-cart-empty class="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
+    <svg aria-hidden="true" class="size-24 -rotate-12"><use href="#chip-1" /></svg>
+    <p data-cart-undo hidden role="status" class="body-5 flex items-center gap-3 rounded-full bg-ink px-4 py-2 text-cream">
+      Vaciaste el carrito
+      <button type="button" data-cart-undo-btn class="button-sm text-yellow underline underline-offset-4">Deshacer</button>
+    </p>
+    <p class="title-1">Tu carrito está vacío</p>
+    <p class="body-6 max-w-xs text-ink/60">Parte por una caja surtida o por las clásicas de 230 g.</p>
+    <a href="/tienda" class="btn btn-ink mt-2">Ver productos</a>
+  </div>
+
+  <ul data-cart-lines class="flex-1 divide-y divide-ink/10 overflow-y-auto px-6"></ul>
+
+  <footer data-cart-footer class="hidden flex-col gap-4 border-t border-ink/10 p-6">
+    <div class="flex items-baseline justify-between">
+      <span class="body-3 text-ink/70">Subtotal</span>
+      <span data-cart-subtotal class="heading-5 tabular-nums">$0</span>
+    </div>
+    <p class="caption-5 text-ink/60">El despacho se calcula en el siguiente paso. Retiro en sala de venta sin costo.</p>
+    <a href="/tienda/checkout" class="btn btn-ink justify-center">Ir a pagar</a>
+    <button type="button" data-cart-close class="button-sm self-center text-ink/60 underline-offset-4 hover:underline">Seguir comprando</button>
+  </footer>
+</dialog>
+
+<!-- "Added" toast: confirms without taking the visitor out of the page they are browsing -->
+<div data-cart-toast hidden role="status" aria-live="polite" class="fixed inset-x-4 bottom-4 z-[70] mx-auto flex max-w-md items-center gap-3 rounded-2xl bg-ink p-3 pr-2 text-cream shadow-2xl sm:right-6 sm:left-auto sm:mx-0 sm:w-[380px]">
+  <img data-toast-img alt="" width="48" height="48" class="size-12 shrink-0 rounded-xl bg-white object-contain p-0.5" />
+  <div class="min-w-0 flex-1">
+    <p class="caption-4 text-yellow">Agregado al carrito</p>
+    <p data-toast-text class="body-5 truncate"></p>
+  </div>
+  <button type="button" data-cart-open class="button-sm shrink-0 rounded-full bg-cream px-3 py-2 text-ink transition-transform duration-300 ease-out-soft hover:scale-105 active:scale-95">Ver carrito</button>
+  <button type="button" data-toast-close aria-label="Cerrar aviso" class="grid size-8 shrink-0 place-items-center rounded-full text-cream/60 hover:bg-cream/10 hover:text-cream">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="size-4"><path d="M6 6l12 12M18 6 6 18" /></svg>
+  </button>
+</div>
+
+<template id="cart-line-tpl">
+  <li class="flex gap-4 py-4">
+    <img data-img alt="" width="80" height="80" class="size-20 shrink-0 rounded-xl bg-white object-contain p-1" />
+    <div class="flex min-w-0 flex-1 flex-col gap-1">
+      <a data-name class="title-3 line-clamp-2 hover:underline"></a>
+      <span data-format class="caption-5 text-ink/60"></span>
+      <div class="mt-auto flex items-center justify-between gap-2">
+        <div class="flex items-center rounded-full bg-ink/5">
+          <button type="button" data-dec class="grid size-8 place-items-center rounded-full hover:bg-ink/10 focus-visible:outline-2 focus-visible:outline-red">−</button>
+          <span data-qty class="body-4 w-8 text-center tabular-nums"></span>
+          <button type="button" data-inc class="grid size-8 place-items-center rounded-full hover:bg-ink/10 focus-visible:outline-2 focus-visible:outline-red">+</button>
+        </div>
+        <span data-total class="body-1 tabular-nums"></span>
+      </div>
+    </div>
+    <button type="button" data-remove class="caption-5 self-start text-ink/50 hover:text-red">Quitar</button>
+  </li>
+</template>
+
+<style>
+  dialog[open] { animation: drawer-in 500ms cubic-bezier(0.22, 1, 0.36, 1); }
+  [data-cart-toast]:not([hidden]) { animation: toast-in 500ms cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes toast-in { from { opacity: 0; transform: translateY(24px); } }
+  :global([data-cart-count].bump) { animation: bump 500ms cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes bump { 40% { transform: scale(1.5); } }
+  dialog::backdrop { animation: fade-in 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes drawer-in { from { transform: translateX(100%); } }
+  @keyframes fade-in { from { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    dialog[open] { animation: fade-in 300ms; }
+    [data-cart-toast]:not([hidden]) { animation: fade-in 300ms; }
+    :global([data-cart-count].bump) { animation: none; }
+  }
+</style>
+
+<script>
+  import { cart, clp } from '../../lib/cart';
+  import { safeImg } from '../../lib/security';
+
+  const drawer = document.getElementById('cart-drawer') as HTMLDialogElement;
+  const list = drawer.querySelector<HTMLUListElement>('[data-cart-lines]')!;
+  const tpl = document.getElementById('cart-line-tpl') as HTMLTemplateElement;
+  const empty = drawer.querySelector<HTMLElement>('[data-cart-empty]')!;
+  const footer = drawer.querySelector<HTMLElement>('[data-cart-footer]')!;
+  const subtotal = drawer.querySelector<HTMLElement>('[data-cart-subtotal]')!;
+
+  const open = () => drawer.showModal();
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    if (t.closest('[data-cart-open]')) open();
+    if (t.closest('[data-cart-close]')) drawer.close();
+  });
+  drawer.addEventListener('click', (e) => e.target === drawer && drawer.close());
+  // Adding never opens the drawer: a toast confirms it and the badge bumps, so browsing continues.
+  const toast = document.querySelector<HTMLElement>('[data-cart-toast]')!;
+  let toastTimer = 0;
+  const hideToast = () => (toast.hidden = true);
+  document.addEventListener('cart:added', (e) => {
+    const d = (e as CustomEvent<{ name?: string; qty?: number; img?: string; count?: number } | null>).detail ?? {};
+    const text = d.name ? `${d.qty && d.qty > 1 ? `${d.qty} × ` : ''}${d.name}` : d.count ? `${d.count} ${d.count === 1 ? 'producto' : 'productos'}` : 'Tus productos';
+    toast.querySelector('[data-toast-text]')!.textContent = text;
+    const img = toast.querySelector<HTMLImageElement>('[data-toast-img]')!;
+    img.hidden = !d.img;
+    if (d.img) img.src = safeImg(d.img);
+    toast.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(hideToast, 4000);
+    document.querySelectorAll<HTMLElement>('[data-cart-count]').forEach((b) => {
+      b.classList.remove('bump');
+      void b.offsetWidth; // restart the animation
+      b.classList.add('bump');
+    });
+  });
+  toast.addEventListener('mouseenter', () => clearTimeout(toastTimer));
+  toast.addEventListener('mouseleave', () => (toastTimer = window.setTimeout(hideToast, 2000)));
+  toast.querySelector('[data-toast-close]')!.addEventListener('click', hideToast);
+  drawer.addEventListener('toggle', () => drawer.open && hideToast());
+
+  // Empty everything in one tap; keep a copy for a few seconds so it can be undone.
+  const clearBtn = drawer.querySelector<HTMLButtonElement>('[data-cart-clear]')!;
+  const undo = drawer.querySelector<HTMLElement>('[data-cart-undo]')!;
+  let lastCleared: typeof cart.lines = [];
+  let undoTimer = 0;
+  clearBtn.addEventListener('click', () => {
+    lastCleared = cart.lines.map((l) => ({ ...l }));
+    cart.clear();
+    undo.hidden = false;
+    clearTimeout(undoTimer);
+    undoTimer = window.setTimeout(() => ((undo.hidden = true), (lastCleared = [])), 8000);
+    drawer.querySelector<HTMLAnchorElement>('[data-cart-empty] a')!.focus();
+  });
+  drawer.querySelector('[data-cart-undo-btn]')!.addEventListener('click', () => {
+    lastCleared.forEach(({ qty, ...l }) => cart.add(l, qty));
+    lastCleared = [];
+    undo.hidden = true;
+    clearTimeout(undoTimer);
+  });
+  drawer.addEventListener('close', () => (undo.hidden = true));
+
+  cart.onChange((lines) => {
+    document.querySelectorAll<HTMLElement>('[data-cart-count]').forEach((b) => {
+      b.textContent = String(cart.count);
+      b.classList.toggle('hidden', cart.count === 0);
+    });
+    document.querySelectorAll('[data-cart-open]').forEach((b) => b.setAttribute('aria-label', `Abrir carrito, ${cart.count} productos`));
+
+    clearBtn.hidden = lines.length === 0;
+    const n = cart.count;
+    drawer.querySelector('[data-cart-head-count]')!.textContent = n ? `${n} ${n === 1 ? 'producto' : 'productos'}` : '';
+    empty.classList.toggle('hidden', lines.length > 0);
+    empty.classList.toggle('flex', lines.length === 0);
+    footer.classList.toggle('hidden', lines.length === 0);
+    footer.classList.toggle('flex', lines.length > 0);
+    subtotal.textContent = clp(cart.subtotal);
+
+    list.replaceChildren(
+      ...lines.map((l) => {
+        const li = tpl.content.firstElementChild!.cloneNode(true) as HTMLLIElement;
+        const $ = (s: string) => li.querySelector<HTMLElement>(s)!;
+        ($('[data-img]') as HTMLImageElement).src = safeImg(l.img);
+        const name = $('[data-name]') as HTMLAnchorElement;
+        name.textContent = l.name;
+        name.href = `/tienda/${l.slug}`;
+        $('[data-format]').textContent = `${l.format} · ${clp(l.price)} c/u`;
+        $('[data-qty]').textContent = String(l.qty);
+        $('[data-total]').textContent = clp(l.price * l.qty);
+        $('[data-dec]').setAttribute('aria-label', `Quitar una unidad de ${l.name}`);
+        $('[data-inc]').setAttribute('aria-label', `Agregar una unidad de ${l.name}`);
+        $('[data-dec]').addEventListener('click', () => cart.setQty(l.id, l.qty - 1));
+        if (l.qty >= (l.max ?? 99)) ($('[data-inc]') as HTMLButtonElement).disabled = true;
+        $('[data-inc]').classList.add('disabled:opacity-30');
+        $('[data-inc]').addEventListener('click', () => cart.setQty(l.id, l.qty + 1));
+        $('[data-remove]').addEventListener('click', () => cart.remove(l.id));
+        return li;
+      }),
+    );
+  });
+</script>

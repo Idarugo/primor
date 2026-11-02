@@ -1,0 +1,81 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { address, MAPS_URL } from '../../data/site';
+---
+
+<Layout title="Pedido recibido · Primor" theme="light">
+  <section class="mx-auto max-w-3xl px-4 pt-32 pb-24 sm:px-8">
+    <div data-order data-pickup={`${address.street}, ${address.city}`} class="hidden">
+      <svg aria-hidden="true" class="size-20 -rotate-12"><use href="#chip-1" /></svg>
+      <p class="caption-3 mt-6 text-red">Pedido <span data-order-number></span> · simulación</p>
+      <h1 class="heading-3 mt-4 sm:heading-2">Gracias, <span data-order-name></span>. Tu pedido quedó registrado.</h1>
+      <p data-order-next class="body-3 mt-4 text-ink/70"></p>
+
+      <div class="mt-8 rounded-3xl bg-white p-6 ring-1 ring-ink/5">
+        <ul data-order-lines class="divide-y divide-ink/10"></ul>
+        <dl class="mt-4 grid gap-2 border-t border-ink/10 pt-4">
+          <div class="flex justify-between"><dt class="body-6 text-ink/60">Pago</dt><dd data-order-payment class="body-4"></dd></div>
+          <div class="flex justify-between"><dt class="body-6 text-ink/60">Estado</dt><dd data-order-status class="body-4"></dd></div>
+          <div class="flex justify-between"><dt class="body-6 text-ink/60">Documento</dt><dd data-order-document class="body-4"></dd></div>
+          <div class="flex justify-between"><dt class="body-6 text-ink/60">Entrega</dt><dd data-order-delivery class="body-4"></dd></div>
+          <div class="flex items-baseline justify-between pt-2"><dt class="title-2">Total productos</dt><dd data-order-total class="heading-5 tabular-nums"></dd></div>
+        </dl>
+      </div>
+
+      <p class="caption-5 mt-6 rounded-2xl bg-yellow px-4 py-3">El pago es simulado: no se hizo ningún cobro. Guarda este enlace para revisar el estado de tu pedido.</p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="/tienda" class="btn btn-ink">Seguir comprando</a>
+        <a href="/cuenta" class="btn bg-ink/5 text-ink">Ver mis pedidos</a>
+        <a href={MAPS_URL} target="_blank" rel="noopener" class="btn bg-ink/5 text-ink">Cómo llegar a la sala de venta</a>
+      </div>
+    </div>
+
+    <div data-missing class="hidden">
+      <h1 class="heading-3">No encontramos ese pedido</h1>
+      <p class="body-3 mt-4 text-ink/70">Revisa que el enlace esté completo o entra a tu cuenta para ver tus pedidos.</p>
+      <a href="/tienda" class="btn btn-ink mt-8">Ir a la tienda</a>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { orders, clp } from '../../lib/cart';
+  import { STATUS_LABEL } from '../../lib/overrides';
+
+  const params = new URLSearchParams(location.search);
+  const n = params.get('n') ?? '';
+  // signed in customers see their orders; guests need the private token from the confirmation link
+  const order = n ? await orders.find(n, params.get('t') ?? '').catch(() => null) : null;
+  const q = (s: string) => document.querySelector<HTMLElement>(s)!;
+  const pickup = q('[data-order]').dataset.pickup!;
+  if (!order) {
+    q('[data-missing]').classList.remove('hidden');
+  } else {
+    q('[data-order]').classList.remove('hidden');
+    q('[data-order-number]').textContent = order.number;
+    q('[data-order-name]').textContent = order.firstName;
+    q('[data-order-payment]').textContent = order.payment;
+    q('[data-order-status]').textContent = STATUS_LABEL[order.status] ?? 'Recibido';
+    q('[data-order-document]').textContent = order.document || 'Boleta';
+    q('[data-order-total]').textContent = clp(order.subtotal);
+    const ship = order.delivery === 'despacho';
+    q('[data-order-delivery]').textContent = ship ? `Despacho a ${order.comuna}` : 'Retiro en sala de venta';
+    q('[data-order-next]').textContent = ship
+      ? `Te escribiremos para confirmar el costo de despacho a ${order.comuna} antes de enviarlo.`
+      : `Te avisaremos cuando esté listo para retirar en ${pickup}.`;
+    q('[data-order-lines]').replaceChildren(
+      ...order.lines.map((l) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center justify-between gap-4 py-3';
+        const name = document.createElement('span');
+        name.className = 'body-6';
+        name.textContent = `${l.qty} × ${l.name} (${l.format})`;
+        const total = document.createElement('span');
+        total.className = 'body-4 tabular-nums';
+        total.textContent = clp(l.qty * l.price);
+        li.append(name, total);
+        return li;
+      }),
+    );
+  }
+</script>

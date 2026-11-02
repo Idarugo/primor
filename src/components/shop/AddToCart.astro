@@ -1,0 +1,60 @@
+---
+import { getImage } from 'astro:assets';
+import { imageFor, formatLabel, shortName, type CatalogProduct } from '../../data/catalog';
+
+interface Props {
+  product: CatalogProduct;
+  /** Card buttons are compact; the product page shows a quantity stepper. */
+  size?: 'card' | 'page';
+}
+const { product: p, size = 'card' } = Astro.props;
+const src = imageFor(p.images[0]);
+const thumb = src ? (await getImage({ src, width: 160, format: 'webp' })).src : '';
+const payload = JSON.stringify({ id: p.id, slug: p.slug, name: shortName(p), format: formatLabel(p), price: p.price, img: thumb, max: p.lowStock ?? 99 });
+---
+
+<!-- Both states are rendered so the admin panel can flip stock without a rebuild (lib/overrides.ts). -->
+<div data-add-to-cart={payload} data-when-stock hidden={!p.inStock} class:list={['flex items-center gap-2', size === 'page' && 'flex-wrap']}>
+  {size === 'page' && (
+    <div class="flex items-center rounded-full bg-ink/5" role="group" aria-label="Cantidad">
+      <button type="button" data-step="-1" aria-label="Restar uno" class="grid size-12 place-items-center rounded-full text-xl hover:bg-ink/10 focus-visible:outline-2 focus-visible:outline-red">−</button>
+      <input data-qty type="number" inputmode="numeric" min="1" max={p.lowStock ?? 99} value="1" aria-label="Cantidad" class="body-1 w-12 appearance-none bg-transparent text-center tabular-nums [&::-webkit-inner-spin-button]:appearance-none" />
+      <button type="button" data-step="1" aria-label="Sumar uno" class="grid size-12 place-items-center rounded-full text-xl hover:bg-ink/10 focus-visible:outline-2 focus-visible:outline-red">+</button>
+    </div>
+  )}
+  <button
+    type="button"
+    data-add
+    class:list={['btn btn-ink focus-visible:outline-red', size === 'card' ? 'button-sm w-full justify-center !py-2' : 'button-lg flex-1 justify-center']}
+  >
+    <span data-label>Agregar al carrito</span>
+  </button>
+</div>
+<button type="button" disabled data-when-out hidden={p.inStock} class:list={['btn cursor-not-allowed bg-ink/10 text-ink/50', size === 'card' ? 'button-sm w-full justify-center !py-2' : 'button-lg w-full justify-center']}>
+  Agotado por ahora
+</button>
+
+<script>
+  import { cart } from '../../lib/cart';
+
+  document.querySelectorAll<HTMLElement>('[data-add-to-cart]').forEach((root) => {
+    const item = () => JSON.parse(root.dataset.addToCart!);
+    const input = root.querySelector<HTMLInputElement>('[data-qty]');
+    const label = root.querySelector<HTMLElement>('[data-label]')!;
+    const qty = () => Math.max(1, Math.min(item().max, Number(input?.value) || 1));
+
+    root.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) =>
+      b.addEventListener('click', () => input && (input.value = String(Math.max(1, Math.min(item().max, qty() + Number(b.dataset.step)))))),
+    );
+    input?.addEventListener('change', () => (input.value = String(qty())));
+
+    root.querySelector('[data-add]')!.addEventListener('click', (e) => {
+      e.preventDefault();
+      cart.add(item(), qty());
+      label.textContent = 'Agregado';
+      setTimeout(() => (label.textContent = 'Agregar al carrito'), 1400);
+      const it = item();
+      document.dispatchEvent(new CustomEvent('cart:added', { detail: { name: it.name, qty: qty(), img: it.img } }));
+    });
+  });
+</script>

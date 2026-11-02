@@ -1,0 +1,667 @@
+{
+  "fetchedAt": "2026-11-02T16:13:41.721Z",
+  "products": [
+    {
+      "id": 6732,
+      "slug": "papas-fritas-primor-34-grs-ketchup",
+      "name": "Papas fritas Primor 34 grs con sachet de Ketchup (10 unidades)",
+      "family": "papas",
+      "isBox": false,
+      "price": 4490,
+      "regularPrice": 4490,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 10,
+      "copy": [
+        "Papas fritas caseras de 34 grs (Incluye sachet de ketchup)"
+      ],
+      "contents": [],
+      "ingredients": "Papas seleccionadas, aceite vegetal y sal. (Incluye sachet de ketchup)",
+      "images": [
+        "6732-0.png",
+        "6732-1.png"
+      ],
+      "source": "https://primor.cl/producto/papas-fritas-primor-34-grs-copia/"
+    },
+    {
+      "id": 5264,
+      "slug": "papas-fritas-primor-180-grs",
+      "name": "Papas fritas Primor 180 grs",
+      "family": "papas",
+      "isBox": false,
+      "price": 2490,
+      "regularPrice": 2490,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "¡Sumérgete en la crujiente tentación de nuestras papas fritas caseras! Con cada bocado, experimentarás la combinación perfecta de sabor casero y textura que solo nuestras papas fritas pueden ofrecer."
+      ],
+      "contents": [],
+      "ingredients": "Papas seleccionadas, aceite vegetal y sal.",
+      "images": [
+        "5264-0.png"
+      ],
+      "source": "https://primor.cl/producto/papas-fritas-primor-180-grs/"
+    },
+    {
+      "id": 4694,
+      "slug": "caja-fans-primor",
+      "name": "Caja «Para los fanáticos Primor»",
+      "family": "cajas",
+      "isBox": true,
+      "price": 15990,
+      "regularPrice": 20200,
+      "onSale": true,
+      "inStock": true,
+      "lowStock": 1,
+      "pack": 1,
+      "copy": [
+        "¡Hemos armado la caja fans al mejor precio!",
+        "Lleva una caja de todos nuestros productos en formato fiesta para que disfrutes en familia o con amigos… o para ti solo!"
+      ],
+      "contents": [
+        "1 Papas fritas 230 grs",
+        "1 Papas fritas Hilo 200 grs",
+        "1 Papas fritas Sin Sal 120 grs",
+        "1 Suflé Queso 200 grs",
+        "1 Suflé Tutifruti 250 grs",
+        "1 Suflé Papa 200 grs",
+        "1 Ramita Salada 270 grs",
+        "1 Ramita Queso 270 grs",
+        "1 Ramita Jamon Serrano 270 grs",
+        "1 Maní Salado 150 grs"
+      ],
+      "ingredients": "",
+      "images": [
+        "4694-0.jpg",
+        "4694-1.jpg",
+        "4694-2.jpg",
+        "4694-3.jpg"
+      ],
+      "source": "https://primor.cl/producto/caja-fans-primor/"
+    },
+    {
+      "id": 4692,
+      "slug": "caja-descubre-primor",
+      "name": "Caja «Descubre Primor»",
+      "family": "cajas",
+      "isBox": true,
+      "price": 10440,
+      "regularPrice": 13050,
+      "onSale": true,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "¡Hemos armado una caja con todo lo necesario!",
+        "Lleva los un mix de todos nuestros productos para que descubras el sabor de Primor."
+      ],
+      "contents": [
+        "1 Papas fritas 230 grs",
+        "1 Papas fritas Hilo 200 grs",
+        "1 Papas fritas Sin Sal 120 grs",
+        "2 Suflé Queso 20 grs",
+        "2 Suflé Tutifruti 20 grs",
+        "2 Suflé Papa 20 grs",
+        "2 Ramita Salada 30 grs",
+        "2 Ramita Jamon Serrano 30 grs",
+        "1 Maní Salado 150 grs"
+      ],
+      "ingredients": "",
+      "images": [
+        "4692-0.jpg",
+        "4692-1.jpeg",
+        "4692-2.jpg",
+        "4692-3.jpg"
+      ],
+      "source": "https://primor.cl/producto/caja-descubre-primor/"
+    },
+    {
+      "id": 4691,
+      "slug": "caja-lo-mas-vendido",
+      "name": "Caja «Lo más Vendido»",
+      "family": "cajas",
+      "isBox": true,
+      "price": 9390,
+      "regularPrice": 11050,
+      "onSale": true,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "¡Hemos armado una caja especial para ti!",
+        "Lleva los productos más vendidos para que disfrutes de todo el sabor de Primor.",
+        "Disfruta de los productos más vendidos de Primor en una sola caja, ideal para compartir con familia y amigos, o simplemente para darte un gusto personal."
+      ],
+      "contents": [
+        "1 Papas fritas 230 grs",
+        "1 Papas fritas Hilo 200 grs",
+        "1 Suflé Queso 200 grs",
+        "1 Ramita Salada 270 grs",
+        "1 Maní Salado 150 grs"
+      ],
+      "ingredients": "",
+      "images": [
+        "4691-0.jpg",
+        "4691-1.jpg",
+        "4691-2.jpg",
+        "4691-3.jpg"
+      ],
+      "source": "https://primor.cl/producto/caja-lo-mas-vendido/"
+    },
+    {
+      "id": 4654,
+      "slug": "papas-fritas-primor-34-grs",
+      "name": "Papas fritas Primor 34 grs",
+      "family": "papas",
+      "isBox": false,
+      "price": 4490,
+      "regularPrice": 4490,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 10,
+      "copy": [
+        "Papas fritas caseras de 34 grs"
+      ],
+      "contents": [],
+      "ingredients": "Papas seleccionadas, aceite vegetal y sal.",
+      "images": [
+        "4654-0.jpg",
+        "4654-1.jpg"
+      ],
+      "source": "https://primor.cl/producto/papas-fritas-primor-34-grs/"
+    },
+    {
+      "id": 4653,
+      "slug": "papas-fritas-primor-80-grs",
+      "name": "Papas fritas Primor 80 grs",
+      "family": "papas",
+      "isBox": false,
+      "price": 970,
+      "regularPrice": 970,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "¡Sumérgete en la crujiente tentación de nuestras papas fritas caseras! Con cada bocado, experimentarás la combinación perfecta de sabor casero y textura que solo nuestras papas fritas pueden ofrecer."
+      ],
+      "contents": [],
+      "ingredients": "Papas seleccionadas, aceite vegetal y sal.",
+      "images": [
+        "4653-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/papas-fritas-primor-80-grs/"
+    },
+    {
+      "id": 4652,
+      "slug": "ramitas-saladas-primor-30-grs",
+      "name": "Ramitas Saladas Primor 30 grs",
+      "family": "ramitas",
+      "isBox": false,
+      "price": 3490,
+      "regularPrice": 3490,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 10,
+      "copy": [
+        "Ramitas saladas 30 grs"
+      ],
+      "contents": [],
+      "ingredients": "Harina, aceite vegetal, sal, azúcar, leche y levadura.",
+      "images": [
+        "4652-0.jpg",
+        "4652-1.jpg"
+      ],
+      "source": "https://primor.cl/producto/ramitas-saladas-primor-30-grs/"
+    },
+    {
+      "id": 4651,
+      "slug": "ramitas-sabor-jamon-serrano-primor-30-grs",
+      "name": "Ramitas sabor Jamón Serrano Primor 30 grs",
+      "family": "ramitas",
+      "isBox": false,
+      "price": 3490,
+      "regularPrice": 3490,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 10,
+      "copy": [
+        "Ramitas sabor Jamon Serrano de 30 grs"
+      ],
+      "contents": [],
+      "ingredients": "Harina, aceite vegetal, sal, azúcar, leche, levadura, colorantes autorizados, colorante rojo, saborizante jamón serrano.",
+      "images": [
+        "4651-0.jpg",
+        "4651-1.jpg"
+      ],
+      "source": "https://primor.cl/producto/ramitas-sabor-jamon-serrano-primor-30-grs/"
+    },
+    {
+      "id": 4650,
+      "slug": "mani-salado-primor-25-grs",
+      "name": "Maní Salado Primor 25 grs",
+      "family": "mani",
+      "isBox": false,
+      "price": 3990,
+      "regularPrice": 3990,
+      "onSale": false,
+      "inStock": false,
+      "lowStock": null,
+      "pack": 10,
+      "copy": [
+        "Maní seleccionado y salado, en bolsa de 25 grs."
+      ],
+      "contents": [],
+      "ingredients": "Maní seleccionado, aceite vegetal y sal.",
+      "images": [
+        "4650-0.jpg",
+        "4650-1.jpg"
+      ],
+      "source": "https://primor.cl/producto/mani-salado-primor-25-grs/"
+    },
+    {
+      "id": 4649,
+      "slug": "sufles-de-papa-primor-20-grs",
+      "name": "Suflés de Papa Primor 20 grs",
+      "family": "sufles",
+      "isBox": false,
+      "price": 3490,
+      "regularPrice": 3490,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 10,
+      "copy": [
+        "Suflés sabor a papas. Livianos, crujientes, y extremadamente sabrosos."
+      ],
+      "contents": [],
+      "ingredients": "Harina de Maíz, aceite vegetal, esencia sabor a papas fritas, realzador de sabor, sal, colorante (amarillo huevo)",
+      "images": [
+        "4649-0.jpg",
+        "4649-1.jpg"
+      ],
+      "source": "https://primor.cl/producto/sufles-de-papa-primor-20-grs/"
+    },
+    {
+      "id": 4648,
+      "slug": "sufles-tuti-fruti-primor-20-grs",
+      "name": "Suflés Tuti Fruti Primor 20 grs",
+      "family": "sufles",
+      "isBox": false,
+      "price": 3490,
+      "regularPrice": 3490,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 10,
+      "copy": [
+        "Suflés mezcla de sabores. Livianos, crujientes, y extremadamente sabrosos."
+      ],
+      "contents": [],
+      "ingredients": "Harina de Maíz, aceite vegetal, esencia sabor a tuti fruti, azúcar, ácido cítrico, lecitina de soya, colorantes (verde limón, rojo, naranja, amarillo piña)",
+      "images": [
+        "4648-0.jpg",
+        "4648-1.jpg"
+      ],
+      "source": "https://primor.cl/producto/sufles-tuti-fruti-primor-20-grs/"
+    },
+    {
+      "id": 4647,
+      "slug": "sufles-queso-primor-20-grs",
+      "name": "Suflés de Queso Primor 20 grs",
+      "family": "sufles",
+      "isBox": false,
+      "price": 3490,
+      "regularPrice": 3490,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 10,
+      "copy": [
+        "Suflés sabor a queso. Livianos, crujientes, y extremadamente sabrosos"
+      ],
+      "contents": [],
+      "ingredients": "Harina de Maíz, aceite vegetal, saborizante queso, colorantes amarillo crepúsculo, tratrazina.",
+      "images": [
+        "4647-0.jpg",
+        "4647-1.jpg"
+      ],
+      "source": "https://primor.cl/producto/sufles-queso-primor-20-grs/"
+    },
+    {
+      "id": 4095,
+      "slug": "papas-hilo-500-grs-primor",
+      "name": "Papas Hilo 500 Grs",
+      "family": "papas",
+      "isBox": false,
+      "price": 4800,
+      "regularPrice": 4800,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [],
+      "contents": [],
+      "ingredients": "Papas seleccionadas, aceite vegetal y sal.",
+      "images": [
+        "4095-0.jpg",
+        "4095-1.jpg",
+        "4095-2.jpg",
+        "4095-3.jpg"
+      ],
+      "source": "https://primor.cl/producto/papas-hilo-500-grs-primor/"
+    },
+    {
+      "id": 2258,
+      "slug": "caja-papas-hilo-10-unidades-500-grs-primor",
+      "name": "Caja Papas Hilo 10 unidades 500 Grs",
+      "family": "papas",
+      "isBox": true,
+      "price": 42000,
+      "regularPrice": 42000,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 10,
+      "copy": [],
+      "contents": [],
+      "ingredients": "",
+      "images": [
+        "2258-0.jpg",
+        "2258-1.jpg",
+        "2258-2.jpg",
+        "2258-3.jpg"
+      ],
+      "source": "https://primor.cl/producto/caja-papas-hilo-10-unidades-500-grs-primor/"
+    },
+    {
+      "id": 753,
+      "slug": "caja-papas-hilo-20-unidades-200-grs-primor",
+      "name": "Caja Papas Hilo 20 unidades 200 Grs",
+      "family": "papas",
+      "isBox": true,
+      "price": 53900,
+      "regularPrice": 53900,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 20,
+      "copy": [],
+      "contents": [],
+      "ingredients": "",
+      "images": [
+        "753-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/caja-papas-hilo-20-unidades-200-grs-primor/"
+    },
+    {
+      "id": 396,
+      "slug": "caja-papas-fritas-10-unidades-230-grs-primor",
+      "name": "Caja Papas Fritas 10 unidades 230 Grs",
+      "family": "papas",
+      "isBox": true,
+      "price": 27900,
+      "regularPrice": 27900,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 10,
+      "copy": [],
+      "contents": [],
+      "ingredients": "",
+      "images": [
+        "396-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/caja-papas-fritas-10-unidades-230-grs-primor/"
+    },
+    {
+      "id": 215,
+      "slug": "papas-fritas-primor-500-grs",
+      "name": "Papas fritas Primor 500 grs",
+      "family": "papas",
+      "isBox": false,
+      "price": 5990,
+      "regularPrice": 5990,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "Papas fritas caseras de 500 grs"
+      ],
+      "contents": [],
+      "ingredients": "Papas seleccionadas, aceite vegetal y sal.",
+      "images": [
+        "215-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/papas-fritas-primor-500-grs/"
+    },
+    {
+      "id": 118,
+      "slug": "papas-fritas-hilo-primor",
+      "name": "Papas fritas Hilo Primor 200 grs",
+      "family": "papas",
+      "isBox": false,
+      "price": 3190,
+      "regularPrice": 3190,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "Para acompañar tus platos y comidas favoritas con un toque especial. Para acompañar cualquier ocasión."
+      ],
+      "contents": [],
+      "ingredients": "Papas seleccionadas, aceite vegetal y sal.",
+      "images": [
+        "118-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/papas-fritas-hilo-primor/"
+    },
+    {
+      "id": 88,
+      "slug": "mani-salado-150-grs",
+      "name": "Maní Salado Primor 150 grs",
+      "family": "mani",
+      "isBox": false,
+      "price": 1290,
+      "regularPrice": 1290,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "Maní selectos granos de 150 grs"
+      ],
+      "contents": [],
+      "ingredients": "Maní seleccionado, aceite vegetal y sal.",
+      "images": [
+        "88-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/mani-salado-150-grs/"
+    },
+    {
+      "id": 84,
+      "slug": "ramitas-sabor-jamon-serrano-270-grs",
+      "name": "Ramitas sabor Jamón Serrano Primor 270 grs",
+      "family": "ramitas",
+      "isBox": false,
+      "price": 1890,
+      "regularPrice": 1890,
+      "onSale": false,
+      "inStock": false,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "Ramitas sabor Jamon Serrano de 270 grs"
+      ],
+      "contents": [],
+      "ingredients": "Harina, aceite vegetal, sal, azúcar, leche, levadura, colorantes autorizados, colorante rojo, saborizante jamón serrano.",
+      "images": [
+        "84-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/ramitas-sabor-jamon-serrano-270-grs/"
+    },
+    {
+      "id": 82,
+      "slug": "ramitas-sabor-queso-270-grs",
+      "name": "Ramitas sabor Queso Primor 270 grs",
+      "family": "ramitas",
+      "isBox": false,
+      "price": 1890,
+      "regularPrice": 1890,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "Ramitas sabor queso de 270 grs"
+      ],
+      "contents": [],
+      "ingredients": "Harina, aceite vegetal, sal, azúcar, leche, levadura, colorantes autorizados, colorante amarillo crepúsculo.",
+      "images": [
+        "82-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/ramitas-sabor-queso-270-grs/"
+    },
+    {
+      "id": 80,
+      "slug": "ramitas-saladas-270-grs",
+      "name": "Ramitas Saladas Primor 270 grs",
+      "family": "ramitas",
+      "isBox": false,
+      "price": 1890,
+      "regularPrice": 1890,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "Ramitas saladas 270 grs"
+      ],
+      "contents": [],
+      "ingredients": "Harina, aceite vegetal, sal, azúcar, leche y levadura.",
+      "images": [
+        "80-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/ramitas-saladas-270-grs/"
+    },
+    {
+      "id": 78,
+      "slug": "sufles-tuti-fruti-250-grs",
+      "name": "Suflés Tuti Fruti Primor 250 grs",
+      "family": "sufles",
+      "isBox": false,
+      "price": 1990,
+      "regularPrice": 1990,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "Suflés mezcla de sabores. Livianos, crujientes, y extremadamente sabrosos."
+      ],
+      "contents": [],
+      "ingredients": "Harina de Maíz, aceite vegetal de Maravilla, esencia sabor a tuti fruti, azúcar, ácido cítrico, lecitina de soya, colorantes (verde limón, rojo, naranja, amarillo piña)",
+      "images": [
+        "78-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/sufles-tuti-fruti-250-grs/"
+    },
+    {
+      "id": 76,
+      "slug": "sufles-de-papa-200-grs",
+      "name": "Suflés de Papa Primor 200 grs",
+      "family": "sufles",
+      "isBox": false,
+      "price": 1490,
+      "regularPrice": 1490,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "Suflés sabor a papas. Livianos, crujientes, y extremadamente sabrosos."
+      ],
+      "contents": [],
+      "ingredients": "Harina de Maíz, aceite vegetal, esencia sabor a papas fritas, realzador de sabor, sal, colorante (amarillo huevo)",
+      "images": [
+        "76-0.png"
+      ],
+      "source": "https://primor.cl/producto/sufles-de-papa-200-grs/"
+    },
+    {
+      "id": 72,
+      "slug": "sufles-de-queso-200-grs",
+      "name": "Suflés de Queso Primor 200 grs",
+      "family": "sufles",
+      "isBox": false,
+      "price": 1490,
+      "regularPrice": 1490,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "Suflés sabor a queso. Livianos, crujientes, y extremadamente sabrosos"
+      ],
+      "contents": [],
+      "ingredients": "Harina de Maíz, aceite vegetal de Maravilla, saborizante queso, colorantes amarillo crepúsculo, tartrazina.",
+      "images": [
+        "72-0.png"
+      ],
+      "source": "https://primor.cl/producto/sufles-de-queso-200-grs/"
+    },
+    {
+      "id": 70,
+      "slug": "papas-fritas-sin-sal",
+      "name": "Papas fritas Sin Sal Primor 120 grs",
+      "family": "papas",
+      "isBox": false,
+      "price": 1890,
+      "regularPrice": 1890,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "Nuevas papas fritas sin sal de 120 grs para acompañar tus comidas preferidas"
+      ],
+      "contents": [],
+      "ingredients": "Papa seleccionada, aceite vegetal. (No es libre de sodio, contiene el sodio natural de la papa)",
+      "images": [
+        "70-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/papas-fritas-sin-sal/"
+    },
+    {
+      "id": 68,
+      "slug": "papas-fritas-230-grs",
+      "name": "Papas fritas Primor 230 grs",
+      "family": "papas",
+      "isBox": false,
+      "price": 3190,
+      "regularPrice": 3190,
+      "onSale": false,
+      "inStock": true,
+      "lowStock": null,
+      "pack": 1,
+      "copy": [
+        "¡Sumérgete en la crujiente tentación de nuestras papas fritas caseras! Con cada bocado, experimentarás la combinación perfecta de sabor casero y textura que solo nuestras papas fritas pueden ofrecer."
+      ],
+      "contents": [],
+      "ingredients": "Papas seleccionadas, aceite vegetal y sal.",
+      "images": [
+        "68-0.jpg"
+      ],
+      "source": "https://primor.cl/producto/papas-fritas-230-grs/"
+    }
+  ]
+}
